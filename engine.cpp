@@ -5,7 +5,7 @@ Engine *Engine::m_Instance = NULL;
 Engine::Engine()
 {
     m_IsRunning = false;
-    m_ScreenBGColor = sf::Color(25,25,25);
+
 }
 
 Engine::~Engine()
@@ -20,10 +20,15 @@ bool Engine::init()
 
     // init screen
     m_Screen = new sf::RenderWindow( sf::VideoMode(dwidth,dheight,32), "STAG");
+    m_ScreenBGColor = sf::Color(25,25,25);
 
     // init screen view
     m_ViewCenter = sf::Vector2f( float(dwidth/2), float(dheight/2));
     m_View = sf::View( m_ViewCenter, sf::Vector2f( float(dwidth), float(dheight)) );
+
+    // init grid
+    m_GridSubColor = sf::Color(70,70,70,128);
+    m_GridSpacing = 32;
 
     return true;
 }
@@ -49,7 +54,7 @@ void Engine::mainLoop()
     // temporary view center, used for panning
     sf::Vector2f tviewcenter = m_ViewCenter;
 
-    sf::RectangleShape testbox( sf::Vector2f(512,512));
+    sf::RectangleShape testbox( sf::Vector2f(32,32));
 
     // main loop
     while(!quit)
@@ -140,6 +145,7 @@ void Engine::mainLoop()
         // update
 
         // draw to screen
+        drawGrid();
         m_Screen->draw(testbox);
 
         // draw to "hud"
@@ -148,6 +154,69 @@ void Engine::mainLoop()
         // display screen
         m_Screen->display();
     }
+}
+
+void Engine::drawGrid()
+{
+    //testing, not efficient, should clean up so not have to create every frame?
+    sf::VertexArray gline(sf::Lines, 2);
+    gline[0].color = m_GridSubColor;
+    gline[1].color = m_GridSubColor;
+
+    // get rect that is a global of screen
+    sf::FloatRect viewrect = getGlobalView();
+
+    //std::cout << "viewrect: TL(" << viewrect.left << "," << viewrect.top << ")  BR(" << viewrect.left + viewrect.width << "," << viewrect.top + viewrect.height << ")\n";
+
+    // switch screen view to local (hud)
+    m_Screen->setView( m_Screen->getDefaultView());
+
+    sf::Vector2f goffset( int(int(viewrect.left / float(m_GridSpacing)) * m_GridSpacing) - viewrect.left,
+                          int(int(viewrect.top / float(m_GridSpacing)) * m_GridSpacing) - viewrect.top);
+
+    // draw vertical grid lines
+    for(int i = 0; i <= int(viewrect.width / float(m_GridSpacing)) + 1; i++)
+    {
+        //gline[0].position = sf::Vector2f(i*m_GridSpacing, viewrect.top);
+        //gline[1].position = sf::Vector2f( gline[0].position.x, viewrect.top + viewrect.height);
+
+        gline[0].position = sf::Vector2f(i*m_GridSpacing + goffset.x, 0);
+        gline[1].position = sf::Vector2f( gline[0].position.x, viewrect.height);
+
+        m_Screen->draw(gline);
+    }
+
+    // draw horizontal grid lines
+    for(int i = 0; i <= int(viewrect.height / float(m_GridSpacing))+1; i++ )
+    {
+        //gline[0].position = sf::Vector2f(viewrect.left, i*m_GridSpacing);
+        //gline[1].position = sf::Vector2f( viewrect.left + viewrect.width, gline[0].position.y);
+
+        gline[0].position = sf::Vector2f(0, i*m_GridSpacing + goffset.y);
+        gline[1].position = sf::Vector2f(viewrect.width, gline[0].position.y);
+
+        m_Screen->draw(gline);
+    }
+
+    // draw axis lines
+
+
+    // switch screen back to global view
+    m_Screen->setView(m_View);
+
+}
+
+sf::FloatRect Engine::getGlobalView()
+{
+    // get rect that is a global of screen
+    sf::Vector2f viewsize = m_View.getSize();
+    sf::FloatRect viewrect;
+    viewrect.left = m_Screen->mapPixelToCoords(sf::Vector2i(0,0)).x;
+    viewrect.top = m_Screen->mapPixelToCoords(sf::Vector2i(0,0)).y;
+    viewrect.width = viewsize.x;
+    viewrect.height = viewsize.y;
+
+    return viewrect;
 }
 
 void Engine::show()

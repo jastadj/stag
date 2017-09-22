@@ -24,6 +24,10 @@ private:
     sf::Vector2f m_ViewCenter;
     sf::Color m_ScreenBGColor;
 
+    // grid
+    sf::Color m_GridSubColor;
+    int m_GridSpacing;
+
     // init
     bool init();
 
@@ -32,6 +36,10 @@ private:
 
     // mainloop
     void mainLoop();
+    void drawGrid();
+
+    // util
+    sf::FloatRect getGlobalView();
 
 public:
 
