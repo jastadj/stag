@@ -46,7 +46,10 @@ void Engine::mainLoop()
 {
     bool quit = false;
 
-    sf::RectangleShape testbox( sf::Vector2f(32,32));
+    // temporary view center, used for panning
+    sf::Vector2f tviewcenter = m_ViewCenter;
+
+    sf::RectangleShape testbox( sf::Vector2f(512,512));
 
     // main loop
     while(!quit)
@@ -65,8 +68,41 @@ void Engine::mainLoop()
         // update mouse
         m_Mouse.update(m_Screen);
 
-        if(m_Mouse.right.isPressed())
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
+
+        }
+        else
+        {
+
+        }
+
+        if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
+        {
+            // get delta of right clicked position and current mouse position (locally)
+            sf::Vector2f mdelta = m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos();
+
+            // apply delta to view center
+            m_View.setCenter( m_ViewCenter - mdelta);
+
+            // set view
+            m_Screen->setView(m_View);
+        }
+        else
+        {
+            // if mouse button was clicked but is no longer
+            if(m_Mouse.right.isPressed())
+            {
+                // get delta of right clicked position and current mouse position (locally)
+                sf::Vector2f mdelta = m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos();
+
+                // apply delta to view center
+                m_ViewCenter -= mdelta;
+                m_View.setCenter( m_ViewCenter);
+                m_Screen->setView(m_View);
+
+                m_Mouse.right.release();
+            }
 
         }
 
@@ -79,6 +115,7 @@ void Engine::mainLoop()
             else if(event.type == sf::Event::KeyPressed)
             {
                 if(event.key.code == sf::Keyboard::Escape) quit = true;
+                else if(event.key.code == sf::Keyboard::F1) show();
             }
             // mouse input
             else if(event.type == sf::Event::MouseButtonPressed)
@@ -93,6 +130,9 @@ void Engine::mainLoop()
                 {
                     // capture click pos
                     m_Mouse.right.click();
+
+                    // capture current view center in temp for panning
+                    tviewcenter = m_ViewCenter;
                 }
             }
         }
@@ -108,4 +148,11 @@ void Engine::mainLoop()
         // display screen
         m_Screen->display();
     }
+}
+
+void Engine::show()
+{
+    std::cout << "view center:" << m_ViewCenter.x << "," << m_ViewCenter.y << std::endl;
+    std::cout << "\n";
+    m_Mouse.show();
 }

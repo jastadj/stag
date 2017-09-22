@@ -2,6 +2,8 @@
 #define CLASS_ENGINE
 
 #include <cstdlib>
+#include <iostream>
+#include <string>
 
 #include <SFML\Graphics.hpp>
 
@@ -44,5 +46,8 @@ public:
     }
 
     bool start();
+
+    //debug
+    void show();
 };
 #endif // CLASS_ENGINE

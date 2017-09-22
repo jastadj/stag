@@ -18,6 +18,7 @@ private:
 
     MOUSE_BUTTONS m_Type;
 
+    bool m_IsPressed;
     sf::Vector2f m_LocalClickedPos;
     sf::Vector2f m_GlobalClickedPos;
 
@@ -26,7 +27,9 @@ private:
 public:
 
     void click();
-    bool isPressed();
+    void release();
+    bool isPressed() { return m_IsPressed;}
+    void setPressed(bool tpressed) {m_IsPressed = tpressed;}
 
     sf::Vector2f getLocalClickedPos();
     sf::Vector2f getGlobalClickedPos();

@@ -55,6 +55,8 @@ MouseButton::MouseButton()
 {
     // this needs to be set by the parent mouse class
     m_Parent = NULL;
+
+    m_IsPressed = false;
 }
 
 MouseButton::~MouseButton()
@@ -66,14 +68,23 @@ void MouseButton::click()
 {
     m_LocalClickedPos = m_Parent->getLocalPos();
     m_GlobalClickedPos = m_Parent->getGlobalPos();
+
+    m_IsPressed = true;
 }
 
+void MouseButton::release()
+{
+    m_IsPressed = false;
+}
+
+/*
 bool MouseButton::isPressed()
 {
     if(m_Type == MOUSE_LEFT) return sf::Mouse::isButtonPressed(sf::Mouse::Left);
     else if(m_Type == MOUSE_RIGHT) return sf::Mouse::isButtonPressed( sf::Mouse::Right);
     else return false;
 }
+*/
 
 sf::Vector2f MouseButton::getLocalClickedPos()
 {
