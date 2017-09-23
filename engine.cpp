@@ -23,8 +23,10 @@ bool Engine::init()
     m_ScreenBGColor = sf::Color(25,25,25);
 
     // init screen view
+    m_ViewZoom = 1.0f;
     m_ViewCenter = sf::Vector2f( float(dwidth/2), float(dheight/2));
     m_View = sf::View( m_ViewCenter, sf::Vector2f( float(dwidth), float(dheight)) );
+    m_View.zoom(m_ViewZoom);
 
     // init grid
     m_GridSubColor = sf::Color(70,70,70,128);
@@ -67,8 +69,8 @@ void Engine::mainLoop()
 
         // set view
         m_View.setCenter(m_ViewCenter);
+        m_View.setSize( sf::Vector2f(800 * m_ViewZoom,600 * m_ViewZoom));
         m_Screen->setView(m_View);
-
 
         // update mouse
         m_Mouse.update(m_Screen);
@@ -85,7 +87,8 @@ void Engine::mainLoop()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
             // get delta of right clicked position and current mouse position (locally)
-            sf::Vector2f mdelta = m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos();
+            //sf::Vector2f mdelta = (m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos());
+            sf::Vector2f mdelta = (m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos())*m_ViewZoom;
 
             // apply delta to view center
             m_View.setCenter( m_ViewCenter - mdelta);
@@ -99,7 +102,7 @@ void Engine::mainLoop()
             if(m_Mouse.right.isPressed())
             {
                 // get delta of right clicked position and current mouse position (locally)
-                sf::Vector2f mdelta = m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos();
+                sf::Vector2f mdelta = (m_Mouse.getLocalPos() - m_Mouse.right.getLocalClickedPos())*m_ViewZoom;
 
                 // apply delta to view center
                 m_ViewCenter -= mdelta;
@@ -110,6 +113,7 @@ void Engine::mainLoop()
             }
 
         }
+
 
         // process events in que
         while(m_Screen->pollEvent(event))
@@ -138,6 +142,21 @@ void Engine::mainLoop()
 
                     // capture current view center in temp for panning
                     tviewcenter = m_ViewCenter;
+                }
+            }
+            // mouse wheel event
+            else if(event.type == sf::Event::MouseWheelMoved)
+            {
+                // mouse wheel scrolled up
+                if(event.mouseWheel.delta > 0)
+                {
+                    // zoom in
+                    m_ViewZoom += 0.2;
+                }
+                // mouse wheel down
+                else if(event.mouseWheel.delta < 0)
+                {
+                    m_ViewZoom -= 0.2;
                 }
             }
         }
@@ -172,15 +191,15 @@ void Engine::drawGrid()
     m_Screen->setView( m_Screen->getDefaultView());
 
     sf::Vector2f goffset( int(int(viewrect.left / float(m_GridSpacing)) * m_GridSpacing) - viewrect.left,
-                          int(int(viewrect.top / float(m_GridSpacing)) * m_GridSpacing) - viewrect.top);
+                          int(int(viewrect.top / float(m_GridSpacing))  * m_GridSpacing) - viewrect.top);
 
     // draw vertical grid lines
-    for(int i = 0; i <= int(viewrect.width / float(m_GridSpacing)) + 1; i++)
+    for(int i = 0; i <= int(viewrect.width / float(m_GridSpacing)*m_ViewZoom ) + 1; i++)
     {
         //gline[0].position = sf::Vector2f(i*m_GridSpacing, viewrect.top);
         //gline[1].position = sf::Vector2f( gline[0].position.x, viewrect.top + viewrect.height);
 
-        gline[0].position = sf::Vector2f(i*m_GridSpacing + goffset.x, 0);
+        gline[0].position = sf::Vector2f(i*m_GridSpacing*m_ViewZoom + goffset.x, 0);
         gline[1].position = sf::Vector2f( gline[0].position.x, viewrect.height);
 
         m_Screen->draw(gline);

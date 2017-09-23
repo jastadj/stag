@@ -21,6 +21,7 @@ private:
     // screen
     sf::RenderWindow *m_Screen;
     sf::View m_View;
+    float m_ViewZoom;
     sf::Vector2f m_ViewCenter;
     sf::Color m_ScreenBGColor;
 
