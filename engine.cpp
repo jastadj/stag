@@ -32,7 +32,16 @@ bool Engine::init()
     m_GridSubColor = sf::Color(70,70,70,128);
     m_GridSpacing = 32;
 
+    // init fonts
+    m_Fonts.push_back( new sf::Font);
+    m_Fonts.back()->loadFromFile(".\\data\\fonts\\font.ttf");
+
     return true;
+}
+
+std::vector<sf::Font*> *Engine::getFonts()
+{
+    return &m_Fonts;
 }
 
 bool Engine::start()

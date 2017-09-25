@@ -35,6 +35,7 @@ private:
 
     // objects
     Mouse m_Mouse;
+    std::vector<sf::Font*> m_Fonts;
     std::vector<Node*> m_Nodes;
 
     // mainloop
@@ -57,6 +58,8 @@ public:
     }
 
     bool start();
+
+    std::vector<sf::Font*> *getFonts();
 
     //debug
     void show();

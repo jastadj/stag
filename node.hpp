@@ -7,6 +7,8 @@ class Node: public STAGObj
 {
 protected:
 
+    std::string m_HeaderText;
+
     void createSprite();
 
 public:
