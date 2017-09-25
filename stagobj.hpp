@@ -6,10 +6,13 @@
 class STAGObj: public GUIObj
 {
 protected:
+    virtual void createSprite()=0;
 
 public:
     STAGObj();
     ~STAGObj();
+
+
 
 };
 

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <SFML\Graphics.hpp>
 
@@ -13,6 +14,7 @@ protected:
     std::string m_Name;
 
     // sprite
+    virtual void createSprite()=0;
     sf::Sprite m_Sprite;
     sf::RenderTexture m_RenderTexture;
     sf::Vector2f m_Position;

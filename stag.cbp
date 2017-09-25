@@ -52,6 +52,8 @@
 		<Unit filename="mouse.hpp" />
 		<Unit filename="node.cpp" />
 		<Unit filename="node.hpp" />
+		<Unit filename="pin.cpp" />
+		<Unit filename="pin.hpp" />
 		<Unit filename="stagobj.cpp" />
 		<Unit filename="stagobj.hpp" />
 		<Extensions>

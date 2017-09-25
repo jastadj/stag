@@ -66,6 +66,11 @@ void Engine::mainLoop()
 
     m_Nodes.push_back(new Node);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
+    PinInt *testpin = new PinInt(m_Nodes.back(), PIN_INPUT);
+    Pin *mypin = m_Nodes.back()->addPin(testpin);
+
+
+    if(mypin == NULL) std::cout << "Error creating pin\n";
 
     // main loop
     while(!quit)
