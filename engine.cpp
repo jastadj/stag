@@ -53,10 +53,10 @@ void Engine::mainLoop()
 {
     bool quit = false;
 
-    // temporary view center, used for panning
-    sf::Vector2f tviewcenter = m_ViewCenter;
-
     sf::RectangleShape testbox( sf::Vector2f(32,32));
+
+    m_Nodes.push_back(new Node);
+    m_Nodes.back()->setPosition(sf::Vector2f(200,200));
 
     // main loop
     while(!quit)
@@ -77,11 +77,18 @@ void Engine::mainLoop()
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-
+            if(m_Mouse.left.getTarget() && m_Mouse.left.isPressed())
+            {
+                m_Mouse.left.getTarget()->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+            }
         }
         else
         {
-
+            // if left mouse button was pressed
+            if(m_Mouse.left.isPressed())
+            {
+                m_Mouse.left.release();
+            }
         }
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Right))
@@ -134,6 +141,23 @@ void Engine::mainLoop()
                 {
                     // capture click pos
                     m_Mouse.left.click();
+
+                    // clear target
+                    m_Mouse.left.setTarget(NULL);
+
+                    // check nodes to see if clicked
+                    for(int n = int(m_Nodes.size())-1; n >= 0; n--)
+                    {
+                        if(m_Nodes[n]->containsGlobal(m_Mouse.left.getGlobalClickedPos()))
+                        {
+                            m_Mouse.left.setTarget(m_Nodes[n]);
+
+                            // get target offset
+                            m_Mouse.left.setOffset( m_Nodes[n]->getPosition() - m_Mouse.left.getGlobalClickedPos());
+
+                            break;
+                        }
+                    }
                 }
                 else if(event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -141,7 +165,7 @@ void Engine::mainLoop()
                     m_Mouse.right.click();
 
                     // capture current view center in temp for panning
-                    tviewcenter = m_ViewCenter;
+                    //m_Mouse.right.setOffset(m_ViewCenter);
                 }
             }
             // mouse wheel event
@@ -162,10 +186,18 @@ void Engine::mainLoop()
         }
 
         // update
+        for(int i = 0; i < int(m_Nodes.size()); i++)
+        {
+            m_Nodes[i]->update();
+        }
 
         // draw to screen
         drawGrid();
         m_Screen->draw(testbox);
+        for(int i = 0; i < int(m_Nodes.size()); i++)
+        {
+            m_Nodes[i]->draw(m_Screen);
+        }
 
         // draw to "hud"
         m_Screen->setView( m_Screen->getDefaultView());

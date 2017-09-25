@@ -33,7 +33,7 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="SFMLDIR" value="C:\codeblocks\SFML-2.4.2" />
+				<Variable name="SFMLDIR" value="C:\Users\jjastad\Documents\CodeBlocks\SFML-2.4.2" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -45,9 +45,15 @@
 		</Linker>
 		<Unit filename="engine.cpp" />
 		<Unit filename="engine.hpp" />
+		<Unit filename="guiobj.cpp" />
+		<Unit filename="guiobj.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mouse.cpp" />
 		<Unit filename="mouse.hpp" />
+		<Unit filename="node.cpp" />
+		<Unit filename="node.hpp" />
+		<Unit filename="stagobj.cpp" />
+		<Unit filename="stagobj.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

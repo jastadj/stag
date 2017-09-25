@@ -3,6 +3,8 @@
 
 #include <SFML\Graphics.hpp>
 
+#include "guiobj.hpp"
+
 enum MOUSE_BUTTONS{MOUSE_LEFT, MOUSE_RIGHT};
 
 // forward dec
@@ -21,6 +23,9 @@ private:
     bool m_IsPressed;
     sf::Vector2f m_LocalClickedPos;
     sf::Vector2f m_GlobalClickedPos;
+    sf::Vector2f m_ClickedOffset;
+
+    GUIObj *m_Target;
 
     void show();
 
@@ -30,9 +35,13 @@ public:
     void release();
     bool isPressed() { return m_IsPressed;}
     void setPressed(bool tpressed) {m_IsPressed = tpressed;}
+    void setOffset(sf::Vector2f toffset);
+    void setTarget(GUIObj *newtarget);
 
     sf::Vector2f getLocalClickedPos();
     sf::Vector2f getGlobalClickedPos();
+    sf::Vector2f getOffset();
+    GUIObj *getTarget();
 
     friend Mouse;
 };

@@ -8,6 +8,7 @@
 #include <SFML\Graphics.hpp>
 
 #include "mouse.hpp"
+#include "node.hpp"
 
 class Engine
 {
@@ -34,6 +35,7 @@ private:
 
     // objects
     Mouse m_Mouse;
+    std::vector<Node*> m_Nodes;
 
     // mainloop
     void mainLoop();
