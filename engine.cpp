@@ -86,9 +86,15 @@ void Engine::mainLoop()
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            if(m_Mouse.left.getTarget() && m_Mouse.left.isPressed())
+            if(m_Mouse.left.isPressed())
             {
-                m_Mouse.left.getTarget()->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+                std::vector<GUIObj*> *tgts = m_Mouse.left.getTargets();
+
+                for(int i = 0; i < int(tgts->size()); i++)
+                {
+                    (*tgts)[i]->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+                }
+
             }
         }
         else
@@ -152,14 +158,14 @@ void Engine::mainLoop()
                     m_Mouse.left.click();
 
                     // clear target
-                    m_Mouse.left.setTarget(NULL);
+                    m_Mouse.left.clearTargets();
 
                     // check nodes to see if clicked
                     for(int n = int(m_Nodes.size())-1; n >= 0; n--)
                     {
                         if(m_Nodes[n]->containsGlobal(m_Mouse.left.getGlobalClickedPos()))
                         {
-                            m_Mouse.left.setTarget(m_Nodes[n]);
+                            m_Mouse.left.addTarget(m_Nodes[n]);
 
                             // get target offset
                             m_Mouse.left.setOffset( m_Nodes[n]->getPosition() - m_Mouse.left.getGlobalClickedPos());

@@ -25,7 +25,7 @@ private:
     sf::Vector2f m_GlobalClickedPos;
     sf::Vector2f m_ClickedOffset;
 
-    GUIObj *m_Target;
+    std::vector<GUIObj*> m_Targets;
 
     void show();
 
@@ -36,12 +36,13 @@ public:
     bool isPressed() { return m_IsPressed;}
     void setPressed(bool tpressed) {m_IsPressed = tpressed;}
     void setOffset(sf::Vector2f toffset);
-    void setTarget(GUIObj *newtarget);
+    void addTarget(GUIObj *newtarget);
+    void clearTargets();
 
     sf::Vector2f getLocalClickedPos();
     sf::Vector2f getGlobalClickedPos();
     sf::Vector2f getOffset();
-    GUIObj *getTarget();
+    std::vector<GUIObj*> *getTargets();
 
     friend Mouse;
 };

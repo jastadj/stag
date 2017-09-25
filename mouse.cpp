@@ -55,7 +55,6 @@ MouseButton::MouseButton()
 {
     // this needs to be set by the parent mouse class
     m_Parent = NULL;
-    m_Target = NULL;
 
     m_IsPressed = false;
 }
@@ -83,10 +82,15 @@ void MouseButton::setOffset(sf::Vector2f toffset)
     m_ClickedOffset = toffset;
 }
 
-void MouseButton::setTarget(GUIObj *newtarget)
+void MouseButton::addTarget(GUIObj *newtarget)
 {
-    m_Target = newtarget;
+    m_Targets.push_back(newtarget);
 
+}
+
+void MouseButton::clearTargets()
+{
+    m_Targets.clear();
 }
 
 /*
@@ -113,9 +117,9 @@ sf::Vector2f MouseButton::getOffset()
     return m_ClickedOffset;
 }
 
-GUIObj *MouseButton::getTarget()
+std::vector<GUIObj*> *MouseButton::getTargets()
 {
-    return m_Target;
+    return &m_Targets;
 }
 
 void MouseButton::show()
@@ -126,8 +130,10 @@ void MouseButton::show()
     std::cout << "Pressed:" << isPressed() << std::endl;
     std::cout << "local pos  = " << m_LocalClickedPos.x << "," << m_LocalClickedPos.y << std::endl;
     std::cout << "global pos = " << m_GlobalClickedPos.x << "," << m_GlobalClickedPos.y << std::endl;
-    std::cout << "Target : ";
-    if(m_Target == NULL) std::cout << "NULL\n:";
-    else std::cout << m_Target->getName() << std::endl;
+    std::cout << "Targets : " << m_Targets.size() << " targets\n";
+    for(int i = 0; i < int(m_Targets.size()); i++)
+    {
+        std::cout << "  " << m_Targets[i]->getName() << std::endl;
+    }
     std::cout << "Offset : " << m_ClickedOffset.x << "," << m_ClickedOffset.y << std::endl;
 }
