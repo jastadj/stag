@@ -12,6 +12,8 @@ protected:
 
     virtual void createSprite();
 
+
+    Pin *addPin(Pin *tpin);
     std::vector<Pin*> m_PinInputs;
     std::vector<Pin*> m_PinOutputs;
 
@@ -19,10 +21,21 @@ public:
     Node();
     ~Node();
 
-    Pin *addPin(Pin *tpin);
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();
+};
+
+class NodeAddInt: public Node
+{
+private:
+
+    void createSprite();
+
+public:
+    NodeAddInt();
+    ~NodeAddInt();
 };
 
 #endif // CLASS_NODE

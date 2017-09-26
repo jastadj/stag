@@ -12,7 +12,7 @@ public:
     STAGObj();
     ~STAGObj();
 
-
+    //virtual void draw(sf::RenderWindow *tscreen);
 
 };
 

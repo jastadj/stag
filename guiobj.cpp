@@ -3,6 +3,7 @@
 GUIObj::GUIObj()
 {
     m_Name = "unnamed";
+    m_Visible = true;
 }
 
 GUIObj::~GUIObj()
@@ -27,7 +28,11 @@ bool GUIObj::containsGlobal(sf::Vector2f gcoord)
 
 void GUIObj::draw(sf::RenderWindow *tscreen)
 {
-    tscreen->draw(m_Sprite);
+    if(m_Visible)
+    {
+        tscreen->draw(m_Sprite);
+    }
+
 }
 
 void GUIObj::update()

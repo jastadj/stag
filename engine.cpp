@@ -62,15 +62,8 @@ void Engine::mainLoop()
 {
     bool quit = false;
 
-    sf::RectangleShape testbox( sf::Vector2f(32,32));
-
-    m_Nodes.push_back(new Node);
+    m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
-    PinInt *testpin = new PinInt(m_Nodes.back(), PIN_INPUT);
-    Pin *mypin = m_Nodes.back()->addPin(testpin);
-
-
-    if(mypin == NULL) std::cout << "Error creating pin\n";
 
     // main loop
     while(!quit)
@@ -170,10 +163,23 @@ void Engine::mainLoop()
                     {
                         if(m_Nodes[n]->containsGlobal(m_Mouse.left.getGlobalClickedPos()))
                         {
-                            m_Mouse.left.addTarget(m_Nodes[n]);
+                            // check if clicking on something like input box inside node
+                            GUIObj *tobj = m_Nodes[n]->getObjectAtGlobal(m_Mouse.getGlobalPos());
 
-                            // get target offset
-                            m_Mouse.left.setOffset( m_Nodes[n]->getPosition() - m_Mouse.left.getGlobalClickedPos());
+                            // if no object inside node was clicked
+                            if(!tobj)
+                            {
+                                m_Mouse.left.addTarget(m_Nodes[n]);
+
+                                // get target offset
+                                m_Mouse.left.setOffset( m_Nodes[n]->getPosition() - m_Mouse.left.getGlobalClickedPos());
+                            }
+                            else
+                            {
+                                // add clicked object to target
+                                m_Mouse.left.addTarget(tobj);
+                            }
+
 
                             break;
                         }
@@ -213,7 +219,7 @@ void Engine::mainLoop()
 
         // draw to screen
         drawGrid();
-        m_Screen->draw(testbox);
+        //m_Screen->draw(testbox);
         for(int i = 0; i < int(m_Nodes.size()); i++)
         {
             m_Nodes[i]->draw(m_Screen);

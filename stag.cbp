@@ -47,6 +47,8 @@
 		<Unit filename="engine.hpp" />
 		<Unit filename="guiobj.cpp" />
 		<Unit filename="guiobj.hpp" />
+		<Unit filename="inputbox.cpp" />
+		<Unit filename="inputbox.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mouse.cpp" />
 		<Unit filename="mouse.hpp" />
