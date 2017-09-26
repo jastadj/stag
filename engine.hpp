@@ -60,6 +60,7 @@ public:
     bool start();
 
     std::vector<sf::Font*> *getFonts();
+    bool isSelected(GUIObj *tobj);
 
     //debug
     void show();

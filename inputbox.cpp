@@ -1,4 +1,5 @@
 #include "inputbox.hpp"
+#include "engine.hpp"
 
 InputBox::InputBox()
 {
@@ -31,4 +32,61 @@ void InputBox::createSprite()
 
     m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
 
+}
+
+void InputBox::createTextSprite()
+{
+    Engine *eptr = Engine::getInstance();
+
+    m_Text = sf::Text(m_String, *(*eptr->getFonts())[0], 12);
+
+    m_Cursor = sf::Text("|", *(*eptr->getFonts())[0], 12);
+
+}
+
+void InputBox::setString(std::string ninput)
+{
+    m_String = ninput;
+
+    createTextSprite();
+}
+
+void InputBox::EventSelected()
+{
+    m_BlinkTimer.restart();
+}
+
+bool InputBox::processEvents(sf::RenderWindow *tscreen, sf::Event &events)
+{
+    )
+
+    return false;
+}
+
+void InputBox::update()
+{
+
+    GUIObj::update();
+
+    m_Text.setPosition(m_Position + sf::Vector2f(2,0));
+}
+
+void InputBox::draw(sf::RenderWindow *tscreen)
+{
+    Engine *eptr = Engine::getInstance();
+
+    GUIObj::draw(tscreen);
+
+    tscreen->draw(m_Text);
+
+    // if this input box is selected, blink cursor
+    if(eptr->isSelected(this))
+    {
+        if(m_BlinkTimer.getElapsedTime().asMilliseconds() > INPUTBOX_BLINK*2) m_BlinkTimer.restart();
+        else if(m_BlinkTimer.getElapsedTime().asMilliseconds() > INPUTBOX_BLINK)
+        {
+            m_Cursor.setPosition(m_Text.getPosition() + sf::Vector2f(m_Text.getLocalBounds().width, 0));
+            tscreen->draw(m_Cursor);
+        }
+    }
 }

@@ -136,8 +136,14 @@ void Engine::mainLoop()
 
 
         // process events in que
+
         while(m_Screen->pollEvent(event))
         {
+            if(!m_Mouse.left.getTargets()->empty())
+            {
+                if( (*m_Mouse.left.getTargets())[0]->processEvents(event)) continue;
+            }
+
             if(event.type == sf::Event::Closed) quit = true;
 
             // keyboard input
@@ -294,6 +300,30 @@ sf::FloatRect Engine::getGlobalView()
     viewrect.height = viewsize.y;
 
     return viewrect;
+}
+
+bool Engine::isSelected(GUIObj *tobj)
+{
+    if(!tobj) return false;
+
+    // get mouse button targets
+    std::vector<GUIObj*> *lt = m_Mouse.left.getTargets();
+    std::vector<GUIObj*> *rt = m_Mouse.right.getTargets();
+
+    // check to see if this is in the left button target list
+    for(int i = 0; i < int(lt->size()); i++)
+    {
+        if(tobj == (*lt)[i]) return true;
+    }
+
+    // check to see if this is in the right button target list
+    for(int i = 0; i < int(rt->size()); i++)
+    {
+        if(tobj == (*rt)[i]) return true;
+    }
+
+    // this object was not found in any mouse button lists
+    return false;
 }
 
 void Engine::show()

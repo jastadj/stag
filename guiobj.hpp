@@ -33,6 +33,10 @@ public:
     std::string getName() { return m_Name;}
     bool isVisible() { return m_Visible;}
 
+    virtual void EventSelected() {};
+    virtual void EventDeselected() {};
+
+    virtual bool processEvents(sf::RenderWindow *tscreen, sf::Event &events) { return false;}
     virtual bool containsGlobal(sf::Vector2f gcoord);
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();

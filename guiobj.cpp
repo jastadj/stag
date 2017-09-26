@@ -21,6 +21,8 @@ sf::Vector2f GUIObj::getPosition()
     return m_Position;
 }
 
+
+
 bool GUIObj::containsGlobal(sf::Vector2f gcoord)
 {
     return m_Sprite.getGlobalBounds().contains(gcoord);

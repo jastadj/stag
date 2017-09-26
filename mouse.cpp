@@ -85,11 +85,13 @@ void MouseButton::setOffset(sf::Vector2f toffset)
 void MouseButton::addTarget(GUIObj *newtarget)
 {
     m_Targets.push_back(newtarget);
+    newtarget->EventSelected();
 
 }
 
 void MouseButton::clearTargets()
 {
+    for(int i = 0; i < int(m_Targets.size()); i++) m_Targets[i]->EventDeselected();
     m_Targets.clear();
 }
 

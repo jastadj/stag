@@ -52,6 +52,8 @@ PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
 
     m_Sprite.setColor(m_PinColor);
 
+    m_InputBox.setString("0");
+
 }
 
 PinInt::~PinInt()
