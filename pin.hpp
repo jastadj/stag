@@ -4,7 +4,7 @@
 #include "stagobj.hpp"
 #include "inputbox.hpp"
 
-enum PIN_DATA_TYPE{PIN_INT};
+enum PIN_DATA_TYPE{PIN_INT, PIN_EXECUTE};
 enum PIN_IO{PIN_INPUT, PIN_OUTPUT};
 
 // forward declaration
@@ -15,11 +15,11 @@ class Pin: public STAGObj
 protected:
 
     STAGObj *m_Parent;
-    Pin *m_Connection;
+    Pin *m_InConnection;
+    std::vector<Pin*> m_OutConnections;
 
     sf::Color m_PinColor;
 
-    PIN_DATA_TYPE m_DataType;
     PIN_IO m_IO;
 
     virtual void createSprite();
@@ -30,12 +30,19 @@ public:
 
     STAGObj *getParent();
 
+    bool hasInputConnection();
+
     virtual PIN_IO getIO() { return m_IO;}
     virtual PIN_DATA_TYPE getDataType()=0;
+
+    virtual bool connect(Pin *tpin);
+    virtual bool disconnect(Pin *tpin = NULL);
 
     virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
     //virtual void draw(sf::RenderWindow *tscreen);
     //virtual void update();
+
+    virtual void show();
 };
 
 class PinExecute: public Pin
@@ -47,7 +54,7 @@ private:
 public:
     PinExecute(STAGObj *nparent, PIN_IO pio);
     ~PinExecute();
-    PIN_DATA_TYPE getDataType() { return m_DataType;}
+    PIN_DATA_TYPE getDataType() { return PIN_EXECUTE;}
 };
 
 class PinInt: public Pin
@@ -62,7 +69,7 @@ public:
     PinInt(STAGObj *nparent, PIN_IO pio);
     ~PinInt();
 
-    virtual PIN_DATA_TYPE getDataType();
+    virtual PIN_DATA_TYPE getDataType() { return PIN_INT;}
 
     virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 

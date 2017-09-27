@@ -30,6 +30,7 @@ public:
     void toggleVisibility() { m_Visible = !m_Visible;}
 
     sf::Vector2f getPosition();
+    sf::Vector2f getCenterPosition();
     std::string getName() { return m_Name;}
     sf::FloatRect getSpriteDimensions();
     bool isVisible() { return m_Visible;}
@@ -41,5 +42,7 @@ public:
     virtual bool containsGlobal(sf::Vector2f gcoord);
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();
+
+    virtual void show();
 };
 #endif // CLASS_GUIOBJ

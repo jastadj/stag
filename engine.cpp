@@ -68,6 +68,10 @@ void Engine::mainLoop()
     m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
 
+    sf::VertexArray m_VertexArray(sf::Lines, 2);
+    bool doDrawVertexArray = false;
+
+
     // main loop
     while(!quit)
     {
@@ -85,6 +89,7 @@ void Engine::mainLoop()
         // update mouse
         m_Mouse.update(m_Screen);
 
+        // check mouse state (for things like dragging)
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             if(m_Mouse.left.isPressed())
@@ -93,7 +98,11 @@ void Engine::mainLoop()
 
                 for(int i = 0; i < int(tgts->size()); i++)
                 {
-                    (*tgts)[i]->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+                    Node *tn = dynamic_cast<Node*>( (*tgts)[i] );
+                    Pin *tp = dynamic_cast<Pin*>( (*tgts)[i]);
+
+                    if(tn) (*tgts)[i]->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+                    else if(tp) { m_VertexArray[1] = m_Mouse.getGlobalPos(); doDrawVertexArray = true;}
                 }
 
             }
@@ -104,6 +113,7 @@ void Engine::mainLoop()
             if(m_Mouse.left.isPressed())
             {
                 m_Mouse.left.release();
+                doDrawVertexArray = false;
             }
         }
 
@@ -154,6 +164,10 @@ void Engine::mainLoop()
             {
                 if(event.key.code == sf::Keyboard::Escape) quit = true;
                 else if(event.key.code == sf::Keyboard::F1) show();
+                else if(event.key.code == sf::Keyboard::F2)
+                {
+                    if(!m_Mouse.left.getTargets()->empty()) (*m_Mouse.left.getTargets())[0]->show();
+                }
             }
             // mouse input
             else if(event.type == sf::Event::MouseButtonPressed)
@@ -187,6 +201,8 @@ void Engine::mainLoop()
                             {
                                 // add clicked object to target
                                 m_Mouse.left.addTarget(tobj);
+
+                                m_VertexArray[0].position = tobj->getCenterPosition();
                             }
 
 
@@ -233,6 +249,9 @@ void Engine::mainLoop()
         {
             m_Nodes[i]->draw(m_Screen);
         }
+
+        // draw connection line
+        if(doDrawVertexArray) m_Screen->draw(m_VertexArray);
 
         // draw to "hud"
         m_Screen->setView( m_Screen->getDefaultView());

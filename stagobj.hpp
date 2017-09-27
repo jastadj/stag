@@ -14,6 +14,8 @@ public:
 
     //virtual void draw(sf::RenderWindow *tscreen);
 
+    virtual void show();
+
 };
 
 #endif // CLASS_STAGOBJ

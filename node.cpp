@@ -134,6 +134,13 @@ void Node::update()
     }
 }
 
+void Node::show()
+{
+    STAGObj::show();
+    std::cout << "NODE OBJECT\n";
+    std::cout << "-----------\n";
+}
+
 //////////////////////////////////////////////////////////////////
 //
 NodeAddInt::NodeAddInt()

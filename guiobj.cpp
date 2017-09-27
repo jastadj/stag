@@ -21,6 +21,11 @@ sf::Vector2f GUIObj::getPosition()
     return m_Position;
 }
 
+sf::Vector2f GUIObj::getCenterPosition()
+{
+    return m_Position + sf::Vector2f(m_Sprite.getLocalBounds().width/2, m_Sprite.getLocalBounds().height/2);
+}
+
 sf::FloatRect GUIObj::getSpriteDimensions()
 {
     return m_Sprite.getLocalBounds();
@@ -43,4 +48,14 @@ void GUIObj::draw(sf::RenderWindow *tscreen)
 void GUIObj::update()
 {
     m_Sprite.setPosition(m_Position);
+}
+
+void GUIObj::show()
+{
+    std::cout << "GUI OBJ\n";
+    std::cout << "-------\n";
+    std::cout << "Name:" << getName() << std::endl;
+    std::cout << "Visible:" << isVisible() << std::endl;
+    std::cout << "Position:" << getPosition().x << "," << getPosition().y << std::endl;
+    std::cout << "Center Pos:" << getCenterPosition().x << "," << getCenterPosition().y << std::endl;
 }

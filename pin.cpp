@@ -4,7 +4,7 @@ Pin::Pin(STAGObj *nparent, PIN_IO pio)
 {
     m_Name = "Pin";
     m_Parent = nparent;
-    m_Connection = NULL;
+    m_InConnection = NULL;
     m_IO = pio;
 
     createSprite();
@@ -44,13 +44,125 @@ GUIObj *Pin::getObjectAtGlobal(sf::Vector2f tpos)
     return tobj;
 }
 
+bool Pin::hasInputConnection()
+{
+    if(m_IO == PIN_INPUT)
+    {
+        if(m_InConnection) return true;
+    }
+
+    return false;
+}
+
+bool Pin::connect(Pin *tpin)
+{
+    // if target pin is not valid
+    if(!tpin) return false;
+
+    // if pins do not match type
+    if(getDataType() != tpin->getDataType()) return false;
+
+    // if this pin is an input pin
+    if(m_IO == PIN_INPUT)
+    {
+        // if already has an input connection, disconnect output to this
+        if(m_InConnection)
+        {
+            m_InConnection->disconnect(this);
+            m_InConnection = NULL;
+        }
+
+
+        // connect outpit pin to this
+        tpin->connect(this);
+        // connect input pin
+        m_InConnection = tpin;
+
+        return true;
+    }
+    else if(m_IO == PIN_OUTPUT)
+    {
+        //if target pin already has connection, reject
+        if(tpin->hasInputConnection()) return false;
+
+        //check output pin connections to check if this target pin is already in the list...
+        for(int i = 0; i < int(m_OutConnections.size()); i++)
+        {
+
+            // double check, exit if found
+            if(m_OutConnections[i] == tpin)
+            {
+                std::cout << "ERROR: Pin output connections already has target pin connected.  This should never happen.\n";
+                exit(2);
+            }
+        }
+
+        m_OutConnections.push_back(tpin);
+    }
+
+    return false;
+}
+
+bool Pin::disconnect(Pin *tpin)
+{
+    if(m_IO == PIN_INPUT)
+    {
+        m_InConnection->disconnect(this);
+        m_InConnection = NULL;
+        return true;
+    }
+    else if(m_IO == PIN_OUTPUT)
+    {
+        // if target pin is provided, disconnect specific pin
+        if(tpin)
+        {
+            //find target pin in output connection list
+            for(int i = 0; i < int(m_OutConnections.size()); i++)
+            {
+
+                if(m_OutConnections[i] == tpin)
+                {
+                    tpin->disconnect();
+                    m_OutConnections.erase(m_OutConnections.begin() + i);
+                    return true;
+                }
+
+            }
+        }
+        // else if no specific pin is specified, disconnect all pins connected to output
+        else
+        {
+            //find target pin in output connection list
+            for(int i = 0; i < int(m_OutConnections.size()); i++)
+            {
+                m_OutConnections[i]->disconnect();
+
+            }
+            m_OutConnections.clear();
+
+            return true;
+        }
+
+
+    }
+
+    return false;
+}
+
+void Pin::show()
+{
+    GUIObj::show();
+    std::cout << "PIN OBJECT\n";
+    std::cout << "----------\n";
+
+}
+
 ////////////////////////////////////////////////////////////
 // PIN EXECUTION
 
 PinExecute::PinExecute(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
 {
     m_Name = "Execution Pin";
-
     createSprite();
 }
 
@@ -79,7 +191,6 @@ void PinExecute::createSprite()
 PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
 {
     m_PinColor = sf::Color::Green;
-
     m_Sprite.setColor(m_PinColor);
 
     m_Value = 0;
@@ -91,11 +202,6 @@ PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
 PinInt::~PinInt()
 {
 
-}
-
-PIN_DATA_TYPE PinInt::getDataType()
-{
-    return PIN_INT;
 }
 
 GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
@@ -116,7 +222,7 @@ void PinInt::draw(sf::RenderWindow *tscreen)
 
     if(m_IO == PIN_INPUT)
     {
-        if(!m_Connection)
+        if(!m_InConnection)
         {
             m_InputBox.draw(tscreen);
         }

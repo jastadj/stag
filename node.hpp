@@ -25,6 +25,8 @@ public:
 
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();
+
+    virtual void show();
 };
 
 
