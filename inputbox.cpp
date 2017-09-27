@@ -56,9 +56,62 @@ void InputBox::EventSelected()
     m_BlinkTimer.restart();
 }
 
-bool InputBox::processEvents(sf::RenderWindow *tscreen, sf::Event &events)
+bool InputBox::processEvents(sf::RenderWindow *tscreen, sf::Event &event)
 {
-    )
+    Engine *eptr = Engine::getInstance();
+
+    if(event.type == sf::Event::TextEntered)
+    {
+        // only allow ascii
+        if(event.text.unicode < 128)
+        {
+
+            // backspace
+            if(event.text.unicode == 8)
+            {
+                if(!m_String.empty())
+                {
+                    m_String.resize( m_String.length()-1);
+                    createTextSprite();
+                }
+
+                return true;
+            }
+            // return
+            else if(event.text.unicode == 13)
+            {
+                eptr->deselectAllMouseTargets();
+                return true;
+            }
+            // number
+            else if(event.text.unicode >= int('0') && event.text.unicode <= int('9'))
+            {
+                m_String += char(event.text.unicode);
+                createTextSprite();
+                return true;
+            }
+            // lower case letter
+            else if(event.text.unicode >= int('a') && event.text.unicode <= int('z'))
+            {
+                m_String += char(event.text.unicode);
+                createTextSprite();
+                return true;
+            }
+            // upper case letter
+            else if(event.text.unicode >= int('A') && event.text.unicode <= int('Z'))
+            {
+                m_String += char(event.text.unicode);
+                createTextSprite();
+                return true;
+            }
+            else
+            {
+                std::cout << "Unknown key (" << event.text.unicode << ") entered in " << m_Name << std::endl;
+                return true;
+            }
+        }
+
+    }
 
     return false;
 }

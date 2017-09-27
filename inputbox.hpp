@@ -32,7 +32,7 @@ public:
 
     virtual void EventSelected();
 
-    virtual bool processEvents(sf::RenderWindow *tscreen, sf::Event &events);
+    virtual bool processEvents(sf::RenderWindow *tscreen, sf::Event &event);
     virtual void update();
     virtual void draw(sf::RenderWindow *tscreen);
 

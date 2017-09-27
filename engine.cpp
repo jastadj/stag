@@ -141,7 +141,7 @@ void Engine::mainLoop()
         {
             if(!m_Mouse.left.getTargets()->empty())
             {
-                if( (*m_Mouse.left.getTargets())[0]->processEvents(event)) continue;
+                if( (*m_Mouse.left.getTargets())[0]->processEvents(m_Screen, event)) continue;
             }
 
             if(event.type == sf::Event::Closed) quit = true;
@@ -324,6 +324,12 @@ bool Engine::isSelected(GUIObj *tobj)
 
     // this object was not found in any mouse button lists
     return false;
+}
+
+void Engine::deselectAllMouseTargets()
+{
+    m_Mouse.left.clearTargets();
+    m_Mouse.right.clearTargets();
 }
 
 void Engine::show()

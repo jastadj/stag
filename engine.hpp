@@ -60,7 +60,9 @@ public:
     bool start();
 
     std::vector<sf::Font*> *getFonts();
+
     bool isSelected(GUIObj *tobj);
+    void deselectAllMouseTargets();
 
     //debug
     void show();
