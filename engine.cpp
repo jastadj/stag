@@ -62,6 +62,9 @@ void Engine::mainLoop()
 {
     bool quit = false;
 
+    m_Nodes.push_back(new NodeEventStart);
+    m_Nodes.push_back(new NodePrintToConsole);
+    m_Nodes.back()->setPosition(sf::Vector2f(400,50));
     m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
 

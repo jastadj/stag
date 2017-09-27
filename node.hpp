@@ -19,13 +19,15 @@ protected:
 
 public:
     Node();
-    ~Node();
+    virtual ~Node();
 
     virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();
 };
+
+
 
 class NodeAddInt: public Node
 {
@@ -37,5 +39,7 @@ public:
     NodeAddInt();
     ~NodeAddInt();
 };
+
+
 
 #endif // CLASS_NODE

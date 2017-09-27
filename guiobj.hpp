@@ -22,7 +22,7 @@ protected:
 
 public:
     GUIObj();
-    ~GUIObj();
+    virtual ~GUIObj();
 
     void setPosition(sf::Vector2f tpos);
     void setName(std::string nname) { m_Name = nname;}
@@ -31,6 +31,7 @@ public:
 
     sf::Vector2f getPosition();
     std::string getName() { return m_Name;}
+    sf::FloatRect getSpriteDimensions();
     bool isVisible() { return m_Visible;}
 
     virtual void EventSelected() {};

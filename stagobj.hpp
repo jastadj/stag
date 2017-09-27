@@ -10,7 +10,7 @@ protected:
 
 public:
     STAGObj();
-    ~STAGObj();
+    virtual ~STAGObj();
 
     //virtual void draw(sf::RenderWindow *tscreen);
 

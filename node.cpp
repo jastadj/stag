@@ -17,7 +17,7 @@ Node::~Node()
 void Node::createSprite()
 {
     int w = 200;
-    int h = 200;
+    int h = 100;
     int headerh = 16;
 
     Engine *eptr = Engine::getInstance();
@@ -29,6 +29,7 @@ void Node::createSprite()
 
     // create header text
     sf::Text htext(m_HeaderText, *(*fonts)[0], 12);
+    htext.setPosition(sf::Vector2f(32,0));
 
     // create render texture
     m_RenderTexture.create(w,h+headerh);
@@ -102,6 +103,12 @@ void Node::draw(sf::RenderWindow *tscreen)
     {
         m_PinInputs[i]->draw(tscreen);
     }
+
+    // draw output pins
+    for(int i = 0; i < int(m_PinOutputs.size()); i++)
+    {
+        m_PinOutputs[i]->draw(tscreen);
+    }
 }
 
 void Node::update()
@@ -109,12 +116,21 @@ void Node::update()
     // main update
     GUIObj::update();
 
+    sf::FloatRect dim = m_Sprite.getLocalBounds();
+
     // update pins
     // note : pin positions are local offsets relative to main node window
     for(int i = 0; i < int(m_PinInputs.size()); i++)
     {
         m_PinInputs[i]->setPosition( m_Position + sf::Vector2f(4, 22 + i*20));
         m_PinInputs[i]->update();
+    }
+    for(int i = 0; i < int(m_PinOutputs.size()); i++)
+    {
+        sf::FloatRect pindim = m_PinOutputs[i]->getSpriteDimensions();
+
+        m_PinOutputs[i]->setPosition( m_Position + sf::Vector2f(dim.width-4-pindim.width, 22 + i*20));
+        m_PinOutputs[i]->update();
     }
 }
 
@@ -134,6 +150,8 @@ NodeAddInt::NodeAddInt()
     // create output pin that adds both pin inputs
     Pin *opin = new PinInt(this, PIN_OUTPUT);
     m_PinOutputs.push_back(opin);
+
+    createSprite();
 }
 
 NodeAddInt::~NodeAddInt()
@@ -144,25 +162,28 @@ NodeAddInt::~NodeAddInt()
 void NodeAddInt::createSprite()
 {
     int w = 200;
-    int h = 200;
-    int headerh = 16;
+    int h = 75;
 
-    Engine *eptr = Engine::getInstance();
-    std::vector<sf::Font*> *fonts = eptr->getFonts();
+    int crossw = 32;
+    int crossh = 8;
 
-    // create header bar
-    sf::RectangleShape headerspr(sf::Vector2f(w, headerh));
-    headerspr.setFillColor(sf::Color(255,0,0,100));
-
-    // create header text
-    sf::Text htext(m_HeaderText, *(*fonts)[0], 12);
+    // create "+" bar
+    sf::RectangleShape rcross(sf::Vector2f(crossw,crossh));
+    rcross.setFillColor(sf::Color(100,100,100) );
+    rcross.setOrigin(sf::Vector2f(crossw/2, crossh/2));
 
     // create render texture
-    m_RenderTexture.create(w,h+headerh);
+    m_RenderTexture.create(w,h);
     m_RenderTexture.clear(sf::Color(100,100,100,100));
-    m_RenderTexture.draw(headerspr);
-    m_RenderTexture.draw(htext);
+
+    // set cross to center of node window
+    rcross.setPosition(sf::Vector2f(w/2, h/2));
+    m_RenderTexture.draw(rcross);
+    rcross.rotate(90);
+    m_RenderTexture.draw(rcross);
+
     m_RenderTexture.display();
 
     m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
 }
+

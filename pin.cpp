@@ -45,12 +45,44 @@ GUIObj *Pin::getObjectAtGlobal(sf::Vector2f tpos)
 }
 
 ////////////////////////////////////////////////////////////
+// PIN EXECUTION
+
+PinExecute::PinExecute(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
+{
+    m_Name = "Execution Pin";
+
+    createSprite();
+}
+
+PinExecute::~PinExecute()
+{
+
+}
+
+void PinExecute::createSprite()
+{
+    sf::Texture pintxt;
+    pintxt.loadFromFile(".\\data\\art\\pinexecute.png");
+
+    sf::Sprite pinspr(pintxt);
+
+    m_RenderTexture.create( pintxt.getSize().x, pintxt.getSize().y);
+    m_RenderTexture.clear(sf::Color::Transparent);
+    m_RenderTexture.draw(pinspr);
+    m_RenderTexture.display();
+
+    m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
+}
+
+////////////////////////////////////////////////////////////
 // PIN INT
 PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
 {
     m_PinColor = sf::Color::Green;
 
     m_Sprite.setColor(m_PinColor);
+
+    m_Value = 0;
 
     m_InputBox.setString("0");
 

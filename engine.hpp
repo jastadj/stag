@@ -9,6 +9,8 @@
 
 #include "mouse.hpp"
 #include "node.hpp"
+#include "nodeevents.hpp"
+#include "nodefunctions.hpp"
 
 class Engine
 {

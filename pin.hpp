@@ -38,11 +38,25 @@ public:
     //virtual void update();
 };
 
+class PinExecute: public Pin
+{
+private:
+
+    void createSprite();
+
+public:
+    PinExecute(STAGObj *nparent, PIN_IO pio);
+    ~PinExecute();
+    PIN_DATA_TYPE getDataType() { return m_DataType;}
+};
+
 class PinInt: public Pin
 {
 protected:
 
     InputBox m_InputBox;
+
+    int m_Value;
 
 public:
     PinInt(STAGObj *nparent, PIN_IO pio);

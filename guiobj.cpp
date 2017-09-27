@@ -21,7 +21,10 @@ sf::Vector2f GUIObj::getPosition()
     return m_Position;
 }
 
-
+sf::FloatRect GUIObj::getSpriteDimensions()
+{
+    return m_Sprite.getLocalBounds();
+}
 
 bool GUIObj::containsGlobal(sf::Vector2f gcoord)
 {
