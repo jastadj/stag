@@ -56,97 +56,94 @@ bool Pin::hasInputConnection()
 
 bool Pin::connect(Pin *tpin)
 {
-    // if target pin is not valid
+    // target pin is valid
     if(!tpin) return false;
 
-    // if pins do not match type
+    // if data types do not match
     if(getDataType() != tpin->getDataType()) return false;
 
-    // if this pin is an input pin
+    // if IO is not mated
+    if(m_IO == tpin->m_IO) return false;
+
+    // if we are an input pin and target pin is an output pin
     if(m_IO == PIN_INPUT)
     {
-        // if already has an input connection, disconnect output to this
-        if(m_InConnection)
-        {
-            m_InConnection->disconnect(this);
-            m_InConnection = NULL;
-        }
+        // if connected, disconnect
+        if(m_InConnection) m_InConnection->disconnect(this);
 
+        return tpin->connect(this);
 
-        // connect outpit pin to this
-        tpin->connect(this);
-        // connect input pin
-        m_InConnection = tpin;
-
-        return true;
     }
+    // if we are an output pin connecting to an input pin
     else if(m_IO == PIN_OUTPUT)
     {
-        //if target pin already has connection, reject
-        if(tpin->hasInputConnection()) return false;
+        // if tpin is already connected...
+        if(tpin->m_InConnection == this) return true;
 
-        //check output pin connections to check if this target pin is already in the list...
+        // error check to see if target input pin is already in out output list
         for(int i = 0; i < int(m_OutConnections.size()); i++)
         {
-
-            // double check, exit if found
-            if(m_OutConnections[i] == tpin)
+            if( m_OutConnections[i] == tpin)
             {
-                std::cout << "ERROR: Pin output connections already has target pin connected.  This should never happen.\n";
+                std::cout << "OUTPUT PIN ALREADY HAS INPUT PIN IN LIST!\n";
                 exit(2);
             }
         }
 
+        // set target input pins connection to this
+        tpin->m_InConnection = this;
         m_OutConnections.push_back(tpin);
+        return true;
     }
+
 
     return false;
 }
 
 bool Pin::disconnect(Pin *tpin)
 {
+    if(!tpin) return false;
+
     if(m_IO == PIN_INPUT)
     {
-        m_InConnection->disconnect(this);
-        m_InConnection = NULL;
-        return true;
+        return tpin->disconnect(this);
     }
     else if(m_IO == PIN_OUTPUT)
     {
-        // if target pin is provided, disconnect specific pin
-        if(tpin)
+        // make sure target pin is in output list
+        for(int i = 0; i < int(m_OutConnections.size()); i++)
         {
-            //find target pin in output connection list
-            for(int i = 0; i < int(m_OutConnections.size()); i++)
+            // connection found
+            if(m_OutConnections[i] == tpin)
             {
+                // disonnect input pin
+                m_OutConnections[i]->m_InConnection = NULL;
 
-                if(m_OutConnections[i] == tpin)
-                {
-                    tpin->disconnect();
-                    m_OutConnections.erase(m_OutConnections.begin() + i);
-                    return true;
-                }
+                // remove pin from out pins
+                m_OutConnections.erase( m_OutConnections.begin() + i);
 
+                return true;
             }
         }
-        // else if no specific pin is specified, disconnect all pins connected to output
-        else
-        {
-            //find target pin in output connection list
-            for(int i = 0; i < int(m_OutConnections.size()); i++)
-            {
-                m_OutConnections[i]->disconnect();
-
-            }
-            m_OutConnections.clear();
-
-            return true;
-        }
-
-
     }
 
     return false;
+}
+
+void Pin::draw(sf::RenderWindow *tscreen)
+{
+    GUIObj::draw(tscreen);
+
+    if(m_IO == PIN_OUTPUT)
+    {
+        for(int i = 0; i < int(m_OutConnections.size()); i++)
+        {
+            sf::VertexArray line(sf::Lines,2);
+            line[0].position = getCenterPosition();
+            line[1].position = m_OutConnections[i]->getCenterPosition();
+            tscreen->draw(line);
+        }
+    }
 }
 
 void Pin::show()
@@ -154,6 +151,21 @@ void Pin::show()
     GUIObj::show();
     std::cout << "PIN OBJECT\n";
     std::cout << "----------\n";
+    std::cout << "PIN IO:";
+    if(m_IO == PIN_INPUT) std::cout << "INPUT\n";
+    else if(m_IO == PIN_OUTPUT) std::cout << "OUTPUT\n";
+    else std::cout << "ERROR\n";
+    std::cout << "Parent:";
+    if(!m_Parent) std::cout << "NULL\n";
+    else std::cout << m_Parent->getName() << std::endl;
+    std::cout << "COLOR:" << m_PinColor.r << "," << m_PinColor.g << "," << m_PinColor.b << "," << m_PinColor.a << std::endl;
+    std::cout << "Input Connection:";
+    if(!m_InConnection) std::cout << "NULL\n";
+    else std::cout << m_InConnection->getName() << std::endl;
+    std::cout << "Output Connections:" << m_OutConnections.size() << std::endl;
+    for(int i = 0; i < int(m_OutConnections.size()); i++) std::cout << "  " << m_OutConnections[i]->getName() << std::endl;
+
+
 
 }
 
@@ -218,7 +230,7 @@ GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
 
 void PinInt::draw(sf::RenderWindow *tscreen)
 {
-    GUIObj::draw(tscreen);
+    Pin::draw(tscreen);
 
     if(m_IO == PIN_INPUT)
     {

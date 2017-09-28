@@ -46,6 +46,7 @@ private:
 
     // util
     sf::FloatRect getGlobalView();
+    GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
 public:
 

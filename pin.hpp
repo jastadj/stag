@@ -15,12 +15,14 @@ class Pin: public STAGObj
 protected:
 
     STAGObj *m_Parent;
+    PIN_IO m_IO;
+
     Pin *m_InConnection;
     std::vector<Pin*> m_OutConnections;
 
     sf::Color m_PinColor;
 
-    PIN_IO m_IO;
+
 
     virtual void createSprite();
 
@@ -39,10 +41,11 @@ public:
     virtual bool disconnect(Pin *tpin = NULL);
 
     virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
-    //virtual void draw(sf::RenderWindow *tscreen);
+    virtual void draw(sf::RenderWindow *tscreen);
     //virtual void update();
 
     virtual void show();
+
 };
 
 class PinExecute: public Pin

@@ -109,11 +109,29 @@ void Engine::mainLoop()
         }
         else
         {
-            // if left mouse button was pressed
+            // if left mouse button WAS pressed
             if(m_Mouse.left.isPressed())
             {
                 m_Mouse.left.release();
                 doDrawVertexArray = false;
+
+                // if left mouse button has pin selected
+                if(!m_Mouse.left.getTargets()->empty())
+                {
+                    Pin *tpin = dynamic_cast<Pin*>( (*m_Mouse.left.getTargets())[0] );
+                    if(tpin)
+                    {
+                        // if left mouse button was released over another pin
+                        GUIObj *tobj = getObjectAtGlobal(m_Mouse.getGlobalPos());
+                        Pin *dpin = dynamic_cast<Pin*>(tobj);
+                        if(dpin)
+                        {
+                            // attempt to connect pins
+                            if(tpin->connect(dpin)) std::cout << "Pins connected.\n";
+                        }
+
+                    }
+                }
             }
         }
 
@@ -184,6 +202,7 @@ void Engine::mainLoop()
                     // check nodes to see if clicked
                     for(int n = int(m_Nodes.size())-1; n >= 0; n--)
                     {
+                        /*
                         if(m_Nodes[n]->containsGlobal(m_Mouse.left.getGlobalClickedPos()))
                         {
                             // check if clicking on something like input box inside node
@@ -207,6 +226,24 @@ void Engine::mainLoop()
 
 
                             break;
+                        }
+                        */
+
+                        // find object at target mouse position (global)
+                        GUIObj *tobj = getObjectAtGlobal(m_Mouse.getGlobalPos());
+
+                        // if an object was found at target position
+                        if(tobj)
+                        {
+                            // add to left mouse target
+                            m_Mouse.left.addTarget(tobj);
+
+                            // set mouse offset of position clicked with reference to object
+                            m_Mouse.left.setOffset( tobj->getPosition() - m_Mouse.left.getGlobalClickedPos());
+
+                            // if object is type pin, set line start
+                            Pin *tpin = dynamic_cast<Pin*>(tobj);
+                            if(tpin) m_VertexArray[0].position = tobj->getCenterPosition();
                         }
                     }
                 }
@@ -322,6 +359,30 @@ sf::FloatRect Engine::getGlobalView()
     viewrect.height = viewsize.y;
 
     return viewrect;
+}
+
+GUIObj *Engine::getObjectAtGlobal(sf::Vector2f tpos)
+{
+    GUIObj *tobj = NULL;
+
+    // check each node window
+    for(int i = 0; i < int(m_Nodes.size()); i++)
+    {
+        // if position is inside node window
+        if( m_Nodes[i]->containsGlobal(tpos))
+        {
+
+            // find objects inside node window at target pos
+            tobj = m_Nodes[i]->getObjectAtGlobal(tpos);
+
+            // if no object was found inside node window, return node window
+            if(!tobj) return m_Nodes[i];
+            else return tobj;
+        }
+    }
+
+    // nothing was found
+    return NULL;
 }
 
 bool Engine::isSelected(GUIObj *tobj)
