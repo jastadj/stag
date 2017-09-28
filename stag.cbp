@@ -54,6 +54,8 @@
 		<Unit filename="mouse.hpp" />
 		<Unit filename="node.cpp" />
 		<Unit filename="node.hpp" />
+		<Unit filename="nodedata.cpp" />
+		<Unit filename="nodedata.hpp" />
 		<Unit filename="nodeevents.cpp" />
 		<Unit filename="nodeevents.hpp" />
 		<Unit filename="nodefunctions.cpp" />

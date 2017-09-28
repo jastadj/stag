@@ -30,18 +30,4 @@ public:
 };
 
 
-
-class NodeAddInt: public Node
-{
-private:
-
-    void createSprite();
-
-public:
-    NodeAddInt();
-    ~NodeAddInt();
-};
-
-
-
 #endif // CLASS_NODE

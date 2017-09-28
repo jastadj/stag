@@ -65,6 +65,10 @@ bool Pin::connect(Pin *tpin)
     // if IO is not mated
     if(m_IO == tpin->m_IO) return false;
 
+    // if pins share the same parents
+    if(m_Parent)
+        if(m_Parent == tpin->m_Parent) return false;
+
     // if we are an input pin and target pin is an output pin
     if(m_IO == PIN_INPUT)
     {
@@ -241,6 +245,37 @@ void PinInt::draw(sf::RenderWindow *tscreen)
     }
 }
 
+int PinInt::getValue()
+{
+    if(m_IO == PIN_INPUT)
+    {
+        // if pin is connected, get value from output in
+        if(m_InConnection)
+        {
+            PinInt *tp = dynamic_cast<PinInt*>(m_InConnection);
+            if(tp) return tp->getValue();
+            else
+            {
+                std::cout << "ERROR getting value from PinInt connection, failed to cast\n";
+                exit(3);
+            }
+        }
+        // else get vlaue from input box
+        return atoi(m_InputBox.getString().c_str());
+    }
+    else if(m_IO == PIN_OUTPUT)
+    {
+        return m_Value;
+    }
+
+    return 0;
+}
+
+void PinInt::setValue(int tval)
+{
+    if(m_IO == PIN_OUTPUT) m_Value = tval;
+}
+
 void PinInt::update()
 {
     GUIObj::update();
@@ -254,4 +289,12 @@ void PinInt::update()
     default:
         break;
     }
+}
+
+void PinInt::show()
+{
+    Pin::show();
+    std::cout << "PININT\n";
+    std::cout << "------\n";
+    std::cout << "Value:" << getValue() << std::endl;
 }

@@ -4,7 +4,7 @@
 #include "stagobj.hpp"
 #include "inputbox.hpp"
 
-enum PIN_DATA_TYPE{PIN_INT, PIN_EXECUTE};
+enum PIN_DATA_TYPE{PIN_INT, PIN_EXECUTE, PIN_STR};
 enum PIN_IO{PIN_INPUT, PIN_OUTPUT};
 
 // forward declaration
@@ -60,11 +60,25 @@ public:
     PIN_DATA_TYPE getDataType() { return PIN_EXECUTE;}
 };
 
-class PinInt: public Pin
+class PinData: public Pin
 {
 protected:
 
     InputBox m_InputBox;
+
+public:
+    PinData(STAGObj *nparent, PIN_IO pio);
+    ~PinData();
+
+    virtual PIN_DATA_TYPE getDataType()=0;
+    virtual void draw(sf::RenderWindow *tscreen);
+    virtual void update();
+
+};
+
+class PinInt: public PinData
+{
+protected:
 
     int m_Value;
 
@@ -76,7 +90,24 @@ public:
 
     virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
+    int getValue();
+    void setValue(int tval);
+
     void draw(sf::RenderWindow *tscreen);
     void update();
+    virtual void show();
+};
+
+class PinStr: public Pin
+{
+protected:
+
+public:
+    PinStr(STAGObj *nparent, PIN_IO pio);
+    ~PinStr();
+
+    virtual PIN_DATA_TYPE getDataType() { return PIN_STR;}
+
+
 };
 #endif // CLASS_PIN
