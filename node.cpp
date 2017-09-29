@@ -141,3 +141,80 @@ void Node::show()
     std::cout << "-----------\n";
 }
 
+
+////////////////////////////////////////////////////
+//
+
+NodeExecutable::NodeExecutable()
+{
+    m_ExecuteOut = new PinExecute(this, PIN_OUTPUT);
+}
+
+NodeExecutable::~NodeExecutable()
+{
+
+}
+
+GUIObj *NodeExecutable::getObjectAtGlobal(sf::Vector2f tpos)
+{
+    // check base class
+    GUIObj *tobj = Node::getObjectAtGlobal(tpos);
+
+    // check execution pin
+    if(!tobj)
+    {
+        if(m_ExecuteOut->containsGlobal(tpos)) return m_ExecuteOut;
+    }
+
+
+    // return found object at position (may be null)
+    return tobj;
+}
+
+NodeExecutable *NodeExecutable::getNextExecution()
+{
+    PinExecute *nextpin = m_ExecuteOut->getNextExecutionPin();
+
+    if(nextpin)
+    {
+        NodeExecutable *nnode = dynamic_cast<NodeExecutable*>(nextpin->getParent());
+
+        if(nnode) return nnode;
+    }
+
+    return NULL;
+
+}
+
+void NodeExecutable::update()
+{
+    Node::update();
+
+    sf::FloatRect dim = getSpriteDimensions();
+    sf::FloatRect edim = m_ExecuteOut->getSpriteDimensions();
+
+    // update execution pins
+    m_ExecuteOut->setPosition(m_Position + sf::Vector2f(dim.width-edim.width-4,2));
+
+    // update pins
+    m_ExecuteOut->update();
+}
+
+void NodeExecutable::draw(sf::RenderWindow *tscreen)
+{
+    Node::draw(tscreen);
+
+    // draw execution pins
+    m_ExecuteOut->draw(tscreen);
+}
+
+void NodeExecutable::show()
+{
+    Node::show();
+    std::cout << "NODE EXECUTABLE\n";
+    std::cout << "---------------\n";
+    std::cout << "Next execution:";
+    NodeExecutable *nextn = getNextExecution();
+    if(nextn) std::cout << nextn->getName() << std::endl;
+    else std::cout << "NULL\n";
+}

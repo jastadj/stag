@@ -29,5 +29,26 @@ public:
     virtual void show();
 };
 
+class NodeExecutable: public Node
+{
+protected:
+
+    PinExecute *m_ExecuteOut;
+
+public:
+    NodeExecutable();
+    ~NodeExecutable();
+
+    NodeExecutable *getNextExecution();
+
+    virtual void execute() {};
+
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
+
+    virtual void update();
+    virtual void draw(sf::RenderWindow *tscreen);
+    virtual void show();
+};
+
 
 #endif // CLASS_NODE

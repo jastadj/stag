@@ -4,19 +4,14 @@
 
 #include "node.hpp"
 
-class NodeEvent: public Node
+class NodeEvent: public NodeExecutable
 {
 private:
-
-    PinExecute *m_ExecuteOut;
 
 public:
     NodeEvent();
     ~NodeEvent();
 
-    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
-    virtual void draw(sf::RenderWindow *tscreen);
-    virtual void update();
 };
 
 class NodeEventStart: public NodeEvent

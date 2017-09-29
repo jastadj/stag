@@ -1,5 +1,5 @@
 #include "nodedata.hpp"
-
+#include <sstream>
 
 //////////////////////////////////////////////////////////////////
 //
@@ -67,4 +67,60 @@ void NodeAddInt::update()
     if(!ip0 || !ip1 || !op0) {std::cout << "Error updating pinint, unable to cast!\n"; exit(4);}
 
     op0->setValue(ip0->getValue() + ip1->getValue());
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////
+//  NODE INT TO STRING
+NodeIntToStr::NodeIntToStr()
+{
+    m_Name = "Int to String";
+
+    // create input integer pins
+    Pin *ipin = new PinInt(this, PIN_INPUT);
+    m_PinInputs.push_back(ipin);
+
+    // create output string pin
+    Pin *opin = new PinStr(this, PIN_OUTPUT);
+    m_PinOutputs.push_back(opin);
+
+    createSprite();
+}
+
+NodeIntToStr::~NodeIntToStr()
+{
+
+}
+
+void NodeIntToStr::createSprite()
+{
+    int w = 200;
+    int h = 75;
+
+    // create render texture
+    m_RenderTexture.create(w,h);
+    m_RenderTexture.clear(sf::Color(100,100,100,100));
+
+    m_RenderTexture.display();
+
+    m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
+}
+
+void NodeIntToStr::update()
+{
+    Node::update();
+
+    PinInt *ip0;
+    PinStr *op0;
+
+    ip0 = dynamic_cast<PinInt*>(m_PinInputs[0]);
+    op0 = dynamic_cast<PinStr*>(m_PinOutputs[0]);
+
+    if(!ip0 || !op0) {std::cout << "Error updating node int to string, unable to cast!\n"; exit(4);}
+
+    std::stringstream ss;
+    ss << ip0->getValue();
+    op0->setString( ss.str());
 }

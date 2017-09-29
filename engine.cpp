@@ -67,6 +67,10 @@ void Engine::mainLoop()
     m_Nodes.back()->setPosition(sf::Vector2f(400,50));
     m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
+    m_Nodes.push_back(new NodeAddInt);
+    m_Nodes.back()->setPosition(sf::Vector2f(200,400));
+    m_Nodes.push_back(new NodeIntToStr);
+    m_Nodes.back()->setPosition(sf::Vector2f(200,0));
 
     sf::VertexArray m_VertexArray(sf::Lines, 2);
     bool doDrawVertexArray = false;
@@ -127,7 +131,8 @@ void Engine::mainLoop()
                         if(dpin)
                         {
                             // attempt to connect pins
-                            if(tpin->connect(dpin)) std::cout << "Pins connected.\n";
+                            //if(tpin->connect(dpin)) std::cout << "Pins connected.\n";
+                            tpin->connect(dpin);
                         }
 
                     }
@@ -186,6 +191,7 @@ void Engine::mainLoop()
                 {
                     if(!m_Mouse.left.getTargets()->empty()) (*m_Mouse.left.getTargets())[0]->show();
                 }
+                else if(event.key.code == sf::Keyboard::F5) runScript();
             }
             // mouse input
             else if(event.type == sf::Event::MouseButtonPressed)
@@ -296,6 +302,47 @@ void Engine::mainLoop()
         // display screen
         m_Screen->display();
     }
+}
+
+void Engine::runScript()
+{
+    NodeEvent *startnode = NULL;
+
+    std::cout << "Starting script...\n";
+
+    // look for start event node
+    for(int i = 0; i < int(m_Nodes.size()); i++)
+    {
+        // cast to node event start
+        NodeEventStart *cn = dynamic_cast<NodeEventStart*>(m_Nodes[i]);
+
+        // start node found
+        if(cn)
+        {
+            // if already found one
+            if(startnode) std::cout << "Multiple start event nodes found!!\n";
+            else startnode = cn;
+        }
+    }
+
+    if(!startnode) std::cout << "Error, unable to find start node!\n";
+    else executeNode(startnode);
+}
+
+void Engine::executeNode(NodeExecutable *tnode)
+{
+    if(!tnode)
+    {
+        std::cout << "Execution done.\n";
+        return;
+    }
+
+    //std::cout << "Running executable node:" << tnode->getName() << std::endl;
+    tnode->execute();
+
+    NodeExecutable *nnode = tnode->getNextExecution();
+
+    executeNode(nnode);
 }
 
 void Engine::drawGrid()

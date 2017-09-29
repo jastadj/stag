@@ -11,6 +11,7 @@
 #include "node.hpp"
 #include "nodeevents.hpp"
 #include "nodefunctions.hpp"
+#include "nodedata.hpp"
 
 class Engine
 {
@@ -43,6 +44,7 @@ private:
     // mainloop
     void mainLoop();
     void drawGrid();
+    void runScript();
 
     // util
     sf::FloatRect getGlobalView();
@@ -66,6 +68,8 @@ public:
 
     bool isSelected(GUIObj *tobj);
     void deselectAllMouseTargets();
+
+    void executeNode(NodeExecutable *tnode);
 
     //debug
     void show();

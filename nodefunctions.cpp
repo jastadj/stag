@@ -3,7 +3,6 @@
 NodeFunction::NodeFunction()
 {
     m_ExecuteIn = new PinExecute(this, PIN_INPUT);
-    m_ExecuteOut = new PinExecute(this, PIN_OUTPUT);
 }
 
 NodeFunction::~NodeFunction()
@@ -13,14 +12,12 @@ NodeFunction::~NodeFunction()
 
 GUIObj *NodeFunction::getObjectAtGlobal(sf::Vector2f tpos)
 {
-    GUIObj *tobj = Node::getObjectAtGlobal(tpos);
+    GUIObj *tobj = NodeExecutable::getObjectAtGlobal(tpos);
 
     if(!tobj)
     {
         // check execution pins
         if(m_ExecuteIn->containsGlobal(tpos)) return m_ExecuteIn;
-        else if(m_ExecuteOut->containsGlobal(tpos)) return m_ExecuteOut;
-
     }
 
     return tobj;
@@ -28,27 +25,27 @@ GUIObj *NodeFunction::getObjectAtGlobal(sf::Vector2f tpos)
 
 void NodeFunction::update()
 {
-    Node::update();
+    NodeExecutable::update();
 
-    sf::FloatRect dim = getSpriteDimensions();
-    sf::FloatRect edim = m_ExecuteIn->getSpriteDimensions();
+    //sf::FloatRect dim = getSpriteDimensions();
+    //sf::FloatRect edim = m_ExecuteIn->getSpriteDimensions();
 
     // update execution pins
     m_ExecuteIn->setPosition(m_Position + sf::Vector2f(4,2));
-    m_ExecuteOut->setPosition(m_Position + sf::Vector2f(dim.width-edim.width-4,2));
+    //m_ExecuteOut->setPosition(m_Position + sf::Vector2f(dim.width-edim.width-4,2));
 
     // update pins
     m_ExecuteIn->update();
-    m_ExecuteOut->update();
+    //m_ExecuteOut->update();
 }
 
 void NodeFunction::draw(sf::RenderWindow *tscreen)
 {
-    Node::draw(tscreen);
+    NodeExecutable::draw(tscreen);
 
     // draw execution pins
     m_ExecuteIn->draw(tscreen);
-    m_ExecuteOut->draw(tscreen);
+    //m_ExecuteOut->draw(tscreen);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -58,10 +55,26 @@ NodePrintToConsole::NodePrintToConsole()
     m_Name = "Print To Console";
     m_HeaderText = "Print To Console";
 
+    // create input string pin
+    Pin *spin = new PinStr(this, PIN_INPUT);
+    m_PinInputs.push_back(spin);
+
     createSprite();
 }
 
 NodePrintToConsole::~NodePrintToConsole()
 {
 
+}
+
+void NodePrintToConsole::execute()
+{
+    if(m_PinInputs.empty()) return;
+
+    PinStr *ps = dynamic_cast<PinStr*>(m_PinInputs[0]);
+
+    if(ps)
+    {
+        std::cout << ps->getString() << std::endl;
+    }
 }

@@ -5,15 +5,29 @@
 
 class NodeAddInt: public Node
 {
-private:
+protected:
 
-    void createSprite();
+    virtual void createSprite();
 
 public:
     NodeAddInt();
     ~NodeAddInt();
 
     virtual void update();
+};
+
+class NodeIntToStr: public Node
+{
+protected:
+
+    virtual void createSprite();
+
+public:
+    NodeIntToStr();
+    ~NodeIntToStr();
+
+    virtual void update();
+
 };
 
 #endif // _H_NODE_DATA

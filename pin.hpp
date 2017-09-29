@@ -58,7 +58,18 @@ public:
     PinExecute(STAGObj *nparent, PIN_IO pio);
     ~PinExecute();
     PIN_DATA_TYPE getDataType() { return PIN_EXECUTE;}
+
+    PinExecute *getNextExecutionPin();
+
+    //virtual bool connect(Pin *tpin);
+    //virtual bool disconnect(Pin *tpin = NULL);
+
+    virtual void show();
+
 };
+
+///////////////////////////////////////////////////////////////////
+// DATA PINS
 
 class PinData: public Pin
 {
@@ -70,9 +81,13 @@ public:
     PinData(STAGObj *nparent, PIN_IO pio);
     ~PinData();
 
+
     virtual PIN_DATA_TYPE getDataType()=0;
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
+
     virtual void draw(sf::RenderWindow *tscreen);
     virtual void update();
+    virtual void show();
 
 };
 
@@ -88,25 +103,30 @@ public:
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_INT;}
 
-    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
-
     int getValue();
     void setValue(int tval);
 
-    void draw(sf::RenderWindow *tscreen);
-    void update();
+    //void draw(sf::RenderWindow *tscreen);
+    //void update();
     virtual void show();
 };
 
-class PinStr: public Pin
+class PinStr: public PinData
 {
 protected:
+
+    std::string m_String;
 
 public:
     PinStr(STAGObj *nparent, PIN_IO pio);
     ~PinStr();
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_STR;}
+
+    std::string getString();
+    void setString(std::string tstring);
+
+    virtual void show();
 
 
 };

@@ -3,13 +3,11 @@
 
 #include "node.hpp"
 
-class NodeFunction: public Node
+class NodeFunction: public NodeExecutable
 {
 private:
 
     PinExecute *m_ExecuteIn;
-    PinExecute *m_ExecuteOut;
-
 
 public:
     NodeFunction();
@@ -27,6 +25,8 @@ private:
 public:
     NodePrintToConsole();
     ~NodePrintToConsole();
+
+    virtual void execute();
 };
 
 #endif // _H_NODE_FUNCTIONS

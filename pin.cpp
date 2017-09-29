@@ -18,7 +18,8 @@ Pin::~Pin()
 void Pin::createSprite()
 {
     sf::Texture pintxt;
-    pintxt.loadFromFile(".\\data\\art\\pin.png");
+    if(m_InConnection || !m_OutConnections.empty()) pintxt.loadFromFile(".\\data\\art\\pinconnected.png");
+    else pintxt.loadFromFile(".\\data\\art\\pin.png");
 
     sf::Sprite pinspr(pintxt);
 
@@ -28,6 +29,8 @@ void Pin::createSprite()
     m_RenderTexture.display();
 
     m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
+
+    m_Sprite.setColor(m_PinColor);
 }
 
 STAGObj *Pin::getParent()
@@ -75,6 +78,7 @@ bool Pin::connect(Pin *tpin)
         // if connected, disconnect
         if(m_InConnection) m_InConnection->disconnect(this);
 
+        createSprite();
         return tpin->connect(this);
 
     }
@@ -87,16 +91,24 @@ bool Pin::connect(Pin *tpin)
         // error check to see if target input pin is already in out output list
         for(int i = 0; i < int(m_OutConnections.size()); i++)
         {
-            if( m_OutConnections[i] == tpin)
+            if(getDataType() == PIN_EXECUTE)
+            {
+                m_OutConnections[i]->m_InConnection = false;
+            }
+            else if( m_OutConnections[i] == tpin)
             {
                 std::cout << "OUTPUT PIN ALREADY HAS INPUT PIN IN LIST!\n";
                 exit(2);
             }
         }
 
+        if(getDataType() == PIN_EXECUTE) m_OutConnections.clear();
+
         // set target input pins connection to this
         tpin->m_InConnection = this;
         m_OutConnections.push_back(tpin);
+        createSprite();
+        tpin->createSprite();
         return true;
     }
 
@@ -110,6 +122,7 @@ bool Pin::disconnect(Pin *tpin)
 
     if(m_IO == PIN_INPUT)
     {
+        createSprite();
         return tpin->disconnect(this);
     }
     else if(m_IO == PIN_OUTPUT)
@@ -126,6 +139,7 @@ bool Pin::disconnect(Pin *tpin)
                 // remove pin from out pins
                 m_OutConnections.erase( m_OutConnections.begin() + i);
 
+                createSprite();
                 return true;
             }
         }
@@ -190,7 +204,8 @@ PinExecute::~PinExecute()
 void PinExecute::createSprite()
 {
     sf::Texture pintxt;
-    pintxt.loadFromFile(".\\data\\art\\pinexecute.png");
+    if(m_InConnection || !m_OutConnections.empty() ) pintxt.loadFromFile(".\\data\\art\\pinexecuteconnected.png");
+    else pintxt.loadFromFile(".\\data\\art\\pinexecute.png");
 
     sf::Sprite pinspr(pintxt);
 
@@ -202,9 +217,88 @@ void PinExecute::createSprite()
     m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
 }
 
+PinExecute *PinExecute::getNextExecutionPin()
+{
+    if(!m_OutConnections.empty())
+    {
+        PinExecute *pe = dynamic_cast<PinExecute*>(m_OutConnections[0]);
+
+        if(pe) return pe;
+    }
+
+    return NULL;
+}
+
+void PinExecute::show()
+{
+    Pin::show();
+    std::cout << "PIN EXECUTABLE\n";
+    std::cout << "--------------\n";
+}
+
+////////////////////////////////////////////////////////////
+// PIN DATA
+PinData::PinData(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
+{
+
+}
+
+PinData::~PinData()
+{
+
+}
+
+GUIObj *PinData::getObjectAtGlobal(sf::Vector2f tpos)
+{
+    GUIObj *tobj = NULL;
+
+    // check input box
+    if(m_InputBox.containsGlobal(tpos)) return &m_InputBox;
+    // if input box does not contain pos, check pin
+    else if(Pin::containsGlobal(tpos)) return this;
+
+    return tobj;
+}
+
+void PinData::draw(sf::RenderWindow *tscreen)
+{
+    Pin::draw(tscreen);
+
+    if(m_IO == PIN_INPUT)
+    {
+        if(!m_InConnection)
+        {
+            m_InputBox.draw(tscreen);
+        }
+    }
+}
+
+void PinData::update()
+{
+    GUIObj::update();
+
+    switch(m_IO)
+    {
+    case PIN_INPUT:
+        m_InputBox.setPosition( m_Position + sf::Vector2f(20,0));
+        m_InputBox.update();
+        break;
+    default:
+        break;
+    }
+}
+
+void PinData::show()
+{
+    Pin::show();
+    std::cout << "PIN DATA\n";
+    std::cout << "--------\n";
+    std::cout << "Input Box Contains:" << m_InputBox.getString() << std::endl;
+}
+
 ////////////////////////////////////////////////////////////
 // PIN INT
-PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : Pin(nparent, pio)
+PinInt::PinInt(STAGObj *nparent, PIN_IO pio) : PinData(nparent, pio)
 {
     m_PinColor = sf::Color::Green;
     m_Sprite.setColor(m_PinColor);
@@ -220,6 +314,7 @@ PinInt::~PinInt()
 
 }
 
+/*
 GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
 {
     GUIObj *tobj = NULL;
@@ -231,7 +326,9 @@ GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
 
     return tobj;
 }
+*/
 
+/*
 void PinInt::draw(sf::RenderWindow *tscreen)
 {
     Pin::draw(tscreen);
@@ -244,6 +341,7 @@ void PinInt::draw(sf::RenderWindow *tscreen)
         }
     }
 }
+*/
 
 int PinInt::getValue()
 {
@@ -276,6 +374,7 @@ void PinInt::setValue(int tval)
     if(m_IO == PIN_OUTPUT) m_Value = tval;
 }
 
+/*
 void PinInt::update()
 {
     GUIObj::update();
@@ -290,6 +389,7 @@ void PinInt::update()
         break;
     }
 }
+*/
 
 void PinInt::show()
 {
@@ -297,4 +397,62 @@ void PinInt::show()
     std::cout << "PININT\n";
     std::cout << "------\n";
     std::cout << "Value:" << getValue() << std::endl;
+}
+
+////////////////////////////////////////////////////////////
+// PIN STRING
+
+PinStr::PinStr(STAGObj *nparent, PIN_IO pio) : PinData(nparent, pio)
+{
+    m_PinColor = sf::Color(255,100,240);
+    m_Sprite.setColor(m_PinColor);
+
+    m_String = "test";
+
+    m_InputBox.setString(m_String);
+}
+
+PinStr::~PinStr()
+{
+
+}
+
+std::string PinStr::getString()
+{
+    if(m_IO == PIN_INPUT)
+    {
+        // if pin is connected, get value from output in
+        if(m_InConnection)
+        {
+            PinStr *tp = dynamic_cast<PinStr*>(m_InConnection);
+            if(tp) return tp->getString();
+            else
+            {
+                std::cout << "ERROR getting value from PinStr connection, failed to cast\n";
+                exit(3);
+            }
+        }
+        //std::cout << "pinstr not connected, returning input box value\n";
+        // else get vlaue from input box
+        return m_InputBox.getString();
+    }
+    else if(m_IO == PIN_OUTPUT)
+    {
+        return m_String;
+    }
+
+    return 0;
+}
+
+void PinStr::setString(std::string tstring)
+{
+    if(m_IO == PIN_OUTPUT) m_String = tstring;
+}
+
+void PinStr::show()
+{
+    PinData::show();
+    std::cout << "PIN STRING\n";
+    std::cout << "----------\n";
+    std::cout << "String:" << getString() << std::endl;
 }
