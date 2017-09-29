@@ -46,6 +46,8 @@ bool Engine::initNodes()
 {
     // create master list of nodes
 
+    return true;
+
 }
 
 std::vector<sf::Font*> *Engine::getFonts()

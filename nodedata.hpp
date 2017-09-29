@@ -8,6 +8,7 @@ class NodeAddInt: public Node
 protected:
 
     virtual void createSprite();
+    bool m_DoSubtraction;
 
 public:
     NodeAddInt(bool dosubtraction = false);

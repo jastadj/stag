@@ -3,9 +3,13 @@
 
 //////////////////////////////////////////////////////////////////
 // NODE ADD INT (OVERLOAD AS SUBTRACT
-NodeAddInt::NodeAddInt(bool dosubraction)
+NodeAddInt::NodeAddInt(bool dosubtraction)
 {
-    m_Name = "AddInts";
+    m_DoSubtraction = dosubtraction;
+
+    if(!m_DoSubtraction) m_Name = "Add Ints";
+    else m_Name = "Subtract Ints";
+
 
     // create input integer pins
     Pin *ipin = new PinInt(this, PIN_INPUT);
@@ -46,8 +50,11 @@ void NodeAddInt::createSprite()
     // set cross to center of node window
     rcross.setPosition(sf::Vector2f(w/2, h/2));
     m_RenderTexture.draw(rcross);
-    rcross.rotate(90);
-    m_RenderTexture.draw(rcross);
+    if(!m_DoSubtraction)
+    {
+        rcross.rotate(90);
+        m_RenderTexture.draw(rcross);
+    }
 
     m_RenderTexture.display();
 
@@ -66,7 +73,8 @@ void NodeAddInt::update()
 
     if(!ip0 || !ip1 || !op0) {std::cout << "Error updating pinint, unable to cast!\n"; exit(4);}
 
-    op0->setValue(ip0->getValue() + ip1->getValue());
+    if(m_DoSubtraction) op0->setValue(ip0->getValue() - ip1->getValue());
+    else op0->setValue(ip0->getValue() + ip1->getValue());
 }
 
 

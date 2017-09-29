@@ -107,7 +107,7 @@ bool Pin::connect(Pin *tpin)
         {
             if(getDataType() == PIN_EXECUTE)
             {
-                m_OutConnections[i]->m_InConnection = false;
+                m_OutConnections[i]->m_InConnection = NULL;
             }
             else if( m_OutConnections[i] == tpin)
             {
