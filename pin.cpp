@@ -57,6 +57,20 @@ bool Pin::hasInputConnection()
     return false;
 }
 
+bool Pin::hasOutputConnection()
+{
+    if(m_OutConnections.empty()) return false;
+
+    return true;
+}
+
+bool Pin::isConnected()
+{
+    if(hasOutputConnection()) return true;
+    if(hasInputConnection()) return true;
+    return false;
+}
+
 bool Pin::connect(Pin *tpin)
 {
     // target pin is valid
@@ -118,10 +132,12 @@ bool Pin::connect(Pin *tpin)
 
 bool Pin::disconnect(Pin *tpin)
 {
-    if(!tpin) return false;
+    if(!tpin && !isConnected()) return false;
 
     if(m_IO == PIN_INPUT)
     {
+        if(tpin == NULL) return m_InConnection->disconnect(this);
+
         createSprite();
         return tpin->disconnect(this);
     }
@@ -130,11 +146,19 @@ bool Pin::disconnect(Pin *tpin)
         // make sure target pin is in output list
         for(int i = 0; i < int(m_OutConnections.size()); i++)
         {
-            // connection found
-            if(m_OutConnections[i] == tpin)
+            // if null pin, disconnect all
+            if(tpin == NULL)
             {
-                // disonnect input pin
+                // disonnect input pin and update sprite
                 m_OutConnections[i]->m_InConnection = NULL;
+                m_OutConnections[i]->createSprite();
+            }
+            // connection found
+            else if(m_OutConnections[i] == tpin)
+            {
+                // disonnect input pin and update sprite
+                m_OutConnections[i]->m_InConnection = NULL;
+                m_OutConnections[i]->createSprite();
 
                 // remove pin from out pins
                 m_OutConnections.erase( m_OutConnections.begin() + i);
@@ -142,6 +166,14 @@ bool Pin::disconnect(Pin *tpin)
                 createSprite();
                 return true;
             }
+
+        }
+
+        if(tpin == NULL)
+        {
+            m_OutConnections.clear();
+            createSprite();
+            return true;
         }
     }
 

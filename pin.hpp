@@ -33,6 +33,8 @@ public:
     STAGObj *getParent();
 
     bool hasInputConnection();
+    bool hasOutputConnection();
+    bool isConnected();
 
     virtual PIN_IO getIO() { return m_IO;}
     virtual PIN_DATA_TYPE getDataType()=0;

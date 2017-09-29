@@ -134,6 +134,15 @@ void Engine::mainLoop()
                             //if(tpin->connect(dpin)) std::cout << "Pins connected.\n";
                             tpin->connect(dpin);
                         }
+                        // else assume user is disconnecting pin
+                        else
+                        {
+                            if(tpin->isConnected())
+                            {
+                                std::cout << "disconnecting pins...\n";
+                                tpin->disconnect();
+                            }
+                        }
 
                     }
                 }
