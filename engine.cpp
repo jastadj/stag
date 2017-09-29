@@ -36,7 +36,16 @@ bool Engine::init()
     m_Fonts.push_back( new sf::Font);
     m_Fonts.back()->loadFromFile(".\\data\\fonts\\font.ttf");
 
+    // init master nodes list
+    initNodes();
+
     return true;
+}
+
+bool Engine::initNodes()
+{
+    // create master list of nodes
+
 }
 
 std::vector<sf::Font*> *Engine::getFonts()
@@ -67,7 +76,7 @@ void Engine::mainLoop()
     m_Nodes.back()->setPosition(sf::Vector2f(400,50));
     m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
-    m_Nodes.push_back(new NodeAddInt);
+    m_Nodes.push_back(new NodeSubtractInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,400));
     m_Nodes.push_back(new NodeIntToStr);
     m_Nodes.back()->setPosition(sf::Vector2f(200,0));
@@ -135,14 +144,7 @@ void Engine::mainLoop()
                             tpin->connect(dpin);
                         }
                         // else assume user is disconnecting pin
-                        else
-                        {
-                            if(tpin->isConnected())
-                            {
-                                std::cout << "disconnecting pins...\n";
-                                tpin->disconnect();
-                            }
-                        }
+                        else if(tpin->isConnected()) tpin->disconnect();
 
                     }
                 }

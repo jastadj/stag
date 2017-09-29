@@ -16,6 +16,19 @@ public:
     virtual void update();
 };
 
+class NodeSubtractInt: public Node
+{
+protected:
+
+    virtual void createSprite();
+
+public:
+    NodeSubtractInt();
+    ~NodeSubtractInt();
+
+    virtual void update();
+};
+
 class NodeIntToStr: public Node
 {
 protected:

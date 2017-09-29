@@ -35,6 +35,10 @@ private:
 
     // init
     bool init();
+    bool initNodes();
+
+    // master node list
+
 
     // objects
     Mouse m_Mouse;
