@@ -10,24 +10,12 @@ protected:
     virtual void createSprite();
 
 public:
-    NodeAddInt();
+    NodeAddInt(bool dosubtraction = false);
     ~NodeAddInt();
 
     virtual void update();
 };
 
-class NodeSubtractInt: public Node
-{
-protected:
-
-    virtual void createSprite();
-
-public:
-    NodeSubtractInt();
-    ~NodeSubtractInt();
-
-    virtual void update();
-};
 
 class NodeIntToStr: public Node
 {

@@ -76,7 +76,7 @@ void Engine::mainLoop()
     m_Nodes.back()->setPosition(sf::Vector2f(400,50));
     m_Nodes.push_back(new NodeAddInt);
     m_Nodes.back()->setPosition(sf::Vector2f(200,200));
-    m_Nodes.push_back(new NodeSubtractInt);
+    m_Nodes.push_back(new NodeAddInt(true));
     m_Nodes.back()->setPosition(sf::Vector2f(200,400));
     m_Nodes.push_back(new NodeIntToStr);
     m_Nodes.back()->setPosition(sf::Vector2f(200,0));
