@@ -1,0 +1,6 @@
+#ifndef CLASS_CHECKBOX
+#define CLASS_CHECKBOX
+
+
+
+#endif // CLASS_CHECKBOX

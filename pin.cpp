@@ -488,3 +488,63 @@ void PinStr::show()
     std::cout << "----------\n";
     std::cout << "String:" << getString() << std::endl;
 }
+
+////////////////////////////////////////////////////////////
+// PIN BOOL
+
+PinBool::PinBool(STAGObj *nparent, PIN_IO pio) : PinData(nparent, pio)
+{
+    m_PinColor = sf::Color(255,0,0);
+    m_Sprite.setColor(m_PinColor);
+
+    m_Bool = false;
+
+    m_InputBox.setString(m_String);
+}
+
+PinBool::~PinBool()
+{
+
+}
+
+std::string PinBool::getBool()
+{
+    if(m_IO == PIN_INPUT)
+    {
+        // if pin is connected, get value from output in
+        if(m_InConnection)
+        {
+            PinBool *tp = dynamic_cast<PinBool*>(m_InConnection);
+            if(tp) return tp->getBool();
+            else
+            {
+                std::cout << "ERROR getting value from PinBool connection, failed to cast\n";
+                exit(3);
+            }
+        }
+        //std::cout << "pinstr not connected, returning input box value\n";
+        // else get vlaue from input box
+        return m_InputBox.getString();
+    }
+    else if(m_IO == PIN_OUTPUT)
+    {
+        return m_String;
+    }
+
+    return 0;
+}
+
+void PinBool::setBool(bool tbool)
+{
+    if(m_IO == PIN_OUTPUT) m_Bool = tbool;
+}
+
+void PinBool::show()
+{
+    PinData::show();
+    std::cout << "PIN BOOL\n";
+    std::cout << "----------\n";
+    std::cout << "BOOL:";
+    if(m_Bool) std::cout << "TRUE\n";
+    else std::cout << "FALSE\n";
+}

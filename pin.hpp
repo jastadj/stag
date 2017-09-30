@@ -3,8 +3,9 @@
 
 #include "stagobj.hpp"
 #include "inputbox.hpp"
+#include "checkbox.hpp"
 
-enum PIN_DATA_TYPE{PIN_INT, PIN_EXECUTE, PIN_STR};
+enum PIN_DATA_TYPE{PIN_INT, PIN_EXECUTE, PIN_STR, PIN_BOOL};
 enum PIN_IO{PIN_INPUT, PIN_OUTPUT};
 
 // forward declaration
@@ -131,5 +132,25 @@ public:
     virtual void show();
 
 
+};
+
+class PinBool: public PinData
+{
+protected:
+
+    bool m_True;
+
+    CheckBox
+
+private:
+    PinBool(STAGObj *nparent, PIN_IO pio);
+    ~PinStr();
+
+    virtual PIN_DATA_TYPE getDataType() { return PIN_BOOL;}
+
+    bool getBool();
+    void setBool(bool tbool);
+
+    virtual void show();
 };
 #endif // CLASS_PIN
