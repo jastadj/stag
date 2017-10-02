@@ -498,8 +498,7 @@ PinBool::PinBool(STAGObj *nparent, PIN_IO pio) : PinData(nparent, pio)
     m_Sprite.setColor(m_PinColor);
 
     m_Bool = false;
-
-    m_InputBox.setString(m_String);
+    m_Checkbox.setChecked(m_Bool);
 }
 
 PinBool::~PinBool()
@@ -507,7 +506,7 @@ PinBool::~PinBool()
 
 }
 
-std::string PinBool::getBool()
+bool PinBool::getBool()
 {
     if(m_IO == PIN_INPUT)
     {
@@ -524,11 +523,11 @@ std::string PinBool::getBool()
         }
         //std::cout << "pinstr not connected, returning input box value\n";
         // else get vlaue from input box
-        return m_InputBox.getString();
+        return m_Checkbox.isChecked();
     }
     else if(m_IO == PIN_OUTPUT)
     {
-        return m_String;
+        return m_Bool;
     }
 
     return 0;

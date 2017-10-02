@@ -117,7 +117,7 @@ NodeIntEquality::NodeIntEquality(EQUALITY tmode)
     m_PinInputs.push_back(ipin);
 
     // create output pin that adds both pin inputs
-    Pin *opin = new PinInt(this, PIN_OUTPUT);
+    Pin *opin = new PinBool(this, PIN_OUTPUT);
     m_PinOutputs.push_back(opin);
 
     createSprite();
@@ -133,46 +133,104 @@ void NodeIntEquality::createSprite()
     int w = 200;
     int h = 75;
 
-    int crossw = 32;
-    int crossh = 8;
-
-    // create "+" bar
-    sf::RectangleShape rcross(sf::Vector2f(crossw,crossh));
-    rcross.setFillColor(sf::Color(100,100,100) );
-    rcross.setOrigin(sf::Vector2f(crossw/2, crossh/2));
+    int ltw = 8;
+    int lth = 32;
 
     // create render texture
     m_RenderTexture.create(w,h);
     m_RenderTexture.clear(sf::Color(100,100,100,100));
 
-    // set cross to center of node window
-    rcross.setPosition(sf::Vector2f(w/2, h/2));
-    m_RenderTexture.draw(rcross);
-    if(!m_DoSubtraction)
-    {
-        rcross.rotate(90);
-        m_RenderTexture.draw(rcross);
-    }
+    sf::ConvexShape lts;
+    lts.setPointCount(6);
+    lts.setPoint(0, sf::Vector2f(0,8));
+    lts.setPoint(1, sf::Vector2f(0,0));
+    lts.setPoint(2, sf::Vector2f(lth, lth/2));
+    lts.setPoint(3, sf::Vector2f(0, lth));
+    lts.setPoint(4, sf::Vector2f(0, lth - ltw));
+    lts.setPoint(5, sf::Vector2f(lth-ltw, lth/2));
+    lts.setFillColor(sf::Color(100,100,100));
+    lts.setOrigin(sf::Vector2f(lth/2, lth/2));
+
+    sf::RectangleShape lbar(sf::Vector2f(lth, ltw));
+    lbar.setFillColor(lts.getFillColor());
+    lbar.setOrigin(sf::Vector2f(lth/2, ltw/2));
 
     m_RenderTexture.display();
 
+    switch(m_Mode)
+    {
+    default:
+        break;
+    case EQ_GREATER_THAN:
+        lts.setPosition(w/2, h/2);
+        m_RenderTexture.draw(lts);
+        break;
+    case EQ_EQUAL_TO:
+        lbar.setPosition(w/2, h/2 - ltw);
+        m_RenderTexture.draw(lbar);
+        lbar.setPosition(w/2, h/2 + ltw);
+        m_RenderTexture.draw(lbar);
+        break;
+    case EQ_LESS_THAN:
+        lts.setPosition(w/2, h/2);
+        lts.rotate(180);
+        m_RenderTexture.draw(lts);
+        break;
+    case EQ_GREATER_THAN_OR_EQUAL_TO:
+        lts.setPosition(w/2, h/2);
+        lbar.setPosition(w/2, h/2 + lth/2);
+        m_RenderTexture.draw(lts);
+        m_RenderTexture.draw(lbar);
+        break;
+    case EQ_LESS_THAN_OR_EQUAL_TO:
+        lts.setPosition(w/2, h/2);
+        lts.rotate(180);
+        lbar.setPosition(w/2, h/2 + lth/2);
+        m_RenderTexture.draw(lts);
+        m_RenderTexture.draw(lbar);
+        break;
+    }
+
+
     m_Sprite = sf::Sprite(m_RenderTexture.getTexture());
 }
+
 
 void NodeIntEquality::update()
 {
     Node::update();
 
-    PinInt *ip0, *ip1, *op0;
+    PinInt *ip0, *ip1;
+    PinBool *op0;
 
+    // int
     ip0 = dynamic_cast<PinInt*>(m_PinInputs[0]);
     ip1 = dynamic_cast<PinInt*>(m_PinInputs[1]);
-    op0 = dynamic_cast<PinInt*>(m_PinOutputs[0]);
+    // bool
+    op0 = dynamic_cast<PinBool*>(m_PinOutputs[0]);
 
     if(!ip0 || !ip1 || !op0) {std::cout << "Error updating pinint, unable to cast!\n"; exit(4);}
 
-    if(m_DoSubtraction) op0->setValue(ip0->getValue() - ip1->getValue());
-    else op0->setValue(ip0->getValue() + ip1->getValue());
+    switch(m_Mode)
+    {
+    default:
+        break;
+    case EQ_LESS_THAN:
+        op0->setBool( ip0->getValue() < ip1->getValue() );
+        break;
+    case EQ_EQUAL_TO:
+        op0->setBool( ip0->getValue() == ip1->getValue() );
+        break;
+    case EQ_GREATER_THAN:
+        op0->setBool( ip0->getValue() > ip1->getValue() );
+        break;
+    case EQ_LESS_THAN_OR_EQUAL_TO:
+        op0->setBool( ip0->getValue() <= ip1->getValue() );
+        break;
+    case EQ_GREATER_THAN_OR_EQUAL_TO:
+        op0->setBool( ip0->getValue() >= ip1->getValue() );
+        break;
+    }
 }
 
 //////////////////////////////////////////////////////////////////

@@ -138,13 +138,13 @@ class PinBool: public PinData
 {
 protected:
 
-    bool m_True;
+    bool m_Bool;
 
-    CheckBox
+    CheckBox m_Checkbox;
 
-private:
+public:
     PinBool(STAGObj *nparent, PIN_IO pio);
-    ~PinStr();
+    ~PinBool();
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_BOOL;}
 

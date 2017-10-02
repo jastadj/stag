@@ -33,7 +33,7 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="SFMLDIR" value="C:\codeblocks\SFML-2.4.2" />
+				<Variable name="SFMLDIR" value="C:\Users\jjastad\Documents\CodeBlocks\SFML-2.4.2" />
 			</Environment>
 		</Build>
 		<Compiler>
@@ -43,6 +43,7 @@
 		<Linker>
 			<Add directory="%SFMLDIR%/lib" />
 		</Linker>
+		<Unit filename="checkbox.cpp" />
 		<Unit filename="checkbox.hpp" />
 		<Unit filename="engine.cpp" />
 		<Unit filename="engine.hpp" />
