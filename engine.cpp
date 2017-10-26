@@ -73,6 +73,7 @@ void Engine::mainLoop()
 {
     bool quit = false;
 
+    // add some testing nodes
     m_Nodes.push_back(new NodeEventStart);
     m_Nodes.push_back(new NodePrintToConsole);
     m_Nodes.back()->setPosition(sf::Vector2f(400,50));
@@ -82,6 +83,8 @@ void Engine::mainLoop()
     m_Nodes.back()->setPosition(sf::Vector2f(200,400));
     m_Nodes.push_back(new NodeIntToStr);
     m_Nodes.back()->setPosition(sf::Vector2f(200,0));
+    m_Nodes.push_back(new NodeBranch);
+    m_Nodes.back()->setPosition(sf::Vector2f(400,400));
 
     sf::VertexArray m_VertexArray(sf::Lines, 2);
     bool doDrawVertexArray = false;
@@ -251,13 +254,14 @@ void Engine::mainLoop()
                 // mouse wheel scrolled up
                 if(event.mouseWheel.delta > 0)
                 {
-                    // zoom in
-                    m_ViewZoom += 0.2;
+                    // zoom out
+                    m_ViewZoom -= 0.2;
                 }
                 // mouse wheel down
                 else if(event.mouseWheel.delta < 0)
                 {
-                    m_ViewZoom -= 0.2;
+                    // zoom in
+                    m_ViewZoom += 0.2;
                 }
             }
         }

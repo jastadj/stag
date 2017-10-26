@@ -48,6 +48,79 @@ void NodeFunction::draw(sf::RenderWindow *tscreen)
     //m_ExecuteOut->draw(tscreen);
 }
 
+////////////////////////////////////////////////////
+//
+
+NodeBranch::NodeBranch()
+{
+    m_Name = "Branch";
+    m_HeaderText = "Branch";
+
+    // add execution node when pin is false
+    m_ExecuteWhenFalse = new PinExecute(this, PIN_OUTPUT);
+
+    // add bool pin to determine which exec branch to take
+    addPin( new PinBool(this, PIN_INPUT));
+
+    createSprite();
+}
+
+NodeBranch::~NodeBranch()
+{
+
+}
+
+GUIObj *NodeBranch::getObjectAtGlobal(sf::Vector2f tpos)
+{
+    GUIObj *tobj = NodeFunction::getObjectAtGlobal(tpos);
+
+    if(!tobj)
+    {
+        if(m_ExecuteWhenFalse->containsGlobal(tpos)) return m_ExecuteWhenFalse;
+    }
+}
+
+NodeExecutable *NodeBranch::getNextExecution()
+{
+    PinBool *tb = dynamic_cast<PinBool*>(m_PinInputs[0]);
+    PinExecute *nextpin = m_ExecuteOut->getNextExecutionPin();
+
+    if(tb)
+    {
+        if(tb->getBool()) nextpin = m_ExecuteOut->getNextExecutionPin();
+        else nextpin = m_ExecuteWhenFalse->getNextExecutionPin();
+    }
+
+    if(nextpin)
+    {
+        NodeExecutable *nnode = dynamic_cast<NodeExecutable*>(nextpin->getParent());
+
+        if(nnode) return nnode;
+    }
+
+    return NULL;
+}
+
+void NodeBranch::update()
+{
+    NodeFunction::update();
+
+    m_ExecuteOut->setPosition(m_ExecuteOut->getPosition() + sf::Vector2f(0,40) );
+    m_ExecuteOut->update();
+
+    m_ExecuteWhenFalse->setPosition( m_ExecuteOut->getPosition() + sf::Vector2f(0,40));
+    m_ExecuteWhenFalse->update();
+}
+
+void NodeBranch::draw(sf::RenderWindow *tscreen)
+{
+    NodeFunction::draw(tscreen);
+
+    m_ExecuteWhenFalse->draw(tscreen);
+
+
+}
+
 //////////////////////////////////////////////////////////////////
 //
 NodePrintToConsole::NodePrintToConsole()

@@ -39,7 +39,7 @@ public:
     NodeExecutable();
     ~NodeExecutable();
 
-    NodeExecutable *getNextExecution();
+    virtual NodeExecutable *getNextExecution();
 
     virtual void execute() {};
 
