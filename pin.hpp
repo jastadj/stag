@@ -78,7 +78,7 @@ class PinData: public Pin
 {
 protected:
 
-    InputBox m_InputBox;
+
 
 public:
     PinData(STAGObj *nparent, PIN_IO pio);
@@ -99,18 +99,20 @@ class PinInt: public PinData
 protected:
 
     int m_Value;
+    InputBox m_InputBox;
 
 public:
     PinInt(STAGObj *nparent, PIN_IO pio);
     ~PinInt();
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_INT;}
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
     int getValue();
     void setValue(int tval);
 
-    //void draw(sf::RenderWindow *tscreen);
-    //void update();
+    virtual void draw(sf::RenderWindow *tscreen);
+    virtual void update();
     virtual void show();
 };
 
@@ -119,16 +121,20 @@ class PinStr: public PinData
 protected:
 
     std::string m_String;
+    InputBox m_InputBox;
 
 public:
     PinStr(STAGObj *nparent, PIN_IO pio);
     ~PinStr();
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_STR;}
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
     std::string getString();
     void setString(std::string tstring);
 
+    virtual void draw(sf::RenderWindow *tscreen);
+    virtual void update();
     virtual void show();
 
 
@@ -147,10 +153,13 @@ public:
     ~PinBool();
 
     virtual PIN_DATA_TYPE getDataType() { return PIN_BOOL;}
+    virtual GUIObj *getObjectAtGlobal(sf::Vector2f tpos);
 
     bool getBool();
     void setBool(bool tbool);
 
+    virtual void draw(sf::RenderWindow *tscreen);
+    virtual void update();
     virtual void show();
 };
 #endif // CLASS_PIN

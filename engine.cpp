@@ -110,16 +110,22 @@ void Engine::mainLoop()
         // check mouse state (for things like dragging)
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
+            // if lef mouse button is presset
             if(m_Mouse.left.isPressed())
             {
+                // get the current targets stored in the left mouse button
                 std::vector<GUIObj*> *tgts = m_Mouse.left.getTargets();
 
+                // for each object in left mouse button
                 for(int i = 0; i < int(tgts->size()); i++)
                 {
+                    // see if target is a node or a pin
                     Node *tn = dynamic_cast<Node*>( (*tgts)[i] );
                     Pin *tp = dynamic_cast<Pin*>( (*tgts)[i]);
 
+                    // drag node
                     if(tn) (*tgts)[i]->setPosition(m_Mouse.getGlobalPos() + m_Mouse.left.getOffset());
+                    // drag line off pin
                     else if(tp) { m_VertexArray[1] = m_Mouse.getGlobalPos(); doDrawVertexArray = true;}
                 }
 
@@ -131,6 +137,8 @@ void Engine::mainLoop()
             if(m_Mouse.left.isPressed())
             {
                 m_Mouse.left.release();
+
+                // stop dragging lines off pin
                 doDrawVertexArray = false;
 
                 // if left mouse button has pin selected

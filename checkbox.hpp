@@ -19,7 +19,7 @@ public:
     void setChecked(bool nchecked);
     void toggleChecked();
 
-    //virtual void EventSelected();
+    virtual void EventSelected();
     virtual bool processEvents(sf::RenderWindow *tscreen, sf::Event &event);
     //virtual void update();
     //virtual void draw(sf::RenderWindow *tscreen);

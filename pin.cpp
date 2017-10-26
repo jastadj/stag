@@ -284,10 +284,7 @@ GUIObj *PinData::getObjectAtGlobal(sf::Vector2f tpos)
 {
     GUIObj *tobj = NULL;
 
-    // check input box
-    if(m_InputBox.containsGlobal(tpos)) return &m_InputBox;
-    // if input box does not contain pos, check pin
-    else if(Pin::containsGlobal(tpos)) return this;
+    if(Pin::containsGlobal(tpos)) return this;
 
     return tobj;
 }
@@ -296,28 +293,12 @@ void PinData::draw(sf::RenderWindow *tscreen)
 {
     Pin::draw(tscreen);
 
-    if(m_IO == PIN_INPUT)
-    {
-        if(!m_InConnection)
-        {
-            m_InputBox.draw(tscreen);
-        }
-    }
 }
 
 void PinData::update()
 {
     GUIObj::update();
 
-    switch(m_IO)
-    {
-    case PIN_INPUT:
-        m_InputBox.setPosition( m_Position + sf::Vector2f(20,0));
-        m_InputBox.update();
-        break;
-    default:
-        break;
-    }
 }
 
 void PinData::show()
@@ -325,7 +306,6 @@ void PinData::show()
     Pin::show();
     std::cout << "PIN DATA\n";
     std::cout << "--------\n";
-    std::cout << "Input Box Contains:" << m_InputBox.getString() << std::endl;
 }
 
 ////////////////////////////////////////////////////////////
@@ -345,35 +325,6 @@ PinInt::~PinInt()
 {
 
 }
-
-/*
-GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
-{
-    GUIObj *tobj = NULL;
-
-    // check input box
-    if(m_InputBox.containsGlobal(tpos)) return &m_InputBox;
-    // if input box does not contain pos, check pin
-    else if(Pin::containsGlobal(tpos)) return this;
-
-    return tobj;
-}
-*/
-
-/*
-void PinInt::draw(sf::RenderWindow *tscreen)
-{
-    Pin::draw(tscreen);
-
-    if(m_IO == PIN_INPUT)
-    {
-        if(!m_InConnection)
-        {
-            m_InputBox.draw(tscreen);
-        }
-    }
-}
-*/
 
 int PinInt::getValue()
 {
@@ -406,10 +357,33 @@ void PinInt::setValue(int tval)
     if(m_IO == PIN_OUTPUT) m_Value = tval;
 }
 
-/*
+GUIObj *PinInt::getObjectAtGlobal(sf::Vector2f tpos)
+{
+    GUIObj *tobj = PinData::getObjectAtGlobal(tpos);
+
+    // check input box
+    if(!tobj)
+        if(m_InputBox.containsGlobal(tpos)) return &m_InputBox;
+
+    return tobj;
+}
+
+void PinInt::draw(sf::RenderWindow *tscreen)
+{
+    PinData::draw(tscreen);
+
+    if(m_IO == PIN_INPUT)
+    {
+        if(!m_InConnection)
+        {
+            m_InputBox.draw(tscreen);
+        }
+    }
+}
+
 void PinInt::update()
 {
-    GUIObj::update();
+    PinData::update();
 
     switch(m_IO)
     {
@@ -421,13 +395,13 @@ void PinInt::update()
         break;
     }
 }
-*/
 
 void PinInt::show()
 {
-    Pin::show();
+    PinData::show();
     std::cout << "PININT\n";
     std::cout << "------\n";
+    std::cout << "Input Box Contains:" << m_InputBox.getString() << std::endl;
     std::cout << "Value:" << getValue() << std::endl;
 }
 
@@ -479,6 +453,45 @@ std::string PinStr::getString()
 void PinStr::setString(std::string tstring)
 {
     if(m_IO == PIN_OUTPUT) m_String = tstring;
+}
+
+GUIObj *PinStr::getObjectAtGlobal(sf::Vector2f tpos)
+{
+     GUIObj *tobj = PinData::getObjectAtGlobal(tpos);
+
+    // check input box
+    if(!tobj)
+        if(m_InputBox.containsGlobal(tpos)) return &m_InputBox;
+
+    return tobj;
+}
+
+void PinStr::draw(sf::RenderWindow *tscreen)
+{
+    PinData::draw(tscreen);
+
+    if(m_IO == PIN_INPUT)
+    {
+        if(!m_InConnection)
+        {
+            m_InputBox.draw(tscreen);
+        }
+    }
+}
+
+void PinStr::update()
+{
+    PinData::update();
+
+    switch(m_IO)
+    {
+    case PIN_INPUT:
+        m_InputBox.setPosition( m_Position + sf::Vector2f(20,0));
+        m_InputBox.update();
+        break;
+    default:
+        break;
+    }
 }
 
 void PinStr::show()
@@ -538,12 +551,51 @@ void PinBool::setBool(bool tbool)
     if(m_IO == PIN_OUTPUT) m_Bool = tbool;
 }
 
+GUIObj *PinBool::getObjectAtGlobal(sf::Vector2f tpos)
+{
+     GUIObj *tobj = PinData::getObjectAtGlobal(tpos);
+
+    // check input box
+    if(!tobj)
+        if(m_Checkbox.containsGlobal(tpos)) return &m_Checkbox;
+
+    return tobj;
+}
+
+void PinBool::update()
+{
+    PinData::update();
+
+    switch(m_IO)
+    {
+    case PIN_INPUT:
+        m_Checkbox.setPosition( m_Position + sf::Vector2f(20,0));
+        m_Checkbox.update();
+        break;
+    default:
+        break;
+    }
+
+}
+
+void PinBool::draw(sf::RenderWindow *tscreen)
+{
+    PinData::draw(tscreen);
+
+    if(m_IO == PIN_INPUT)
+    {
+        if(!m_InConnection)
+        {
+            m_Checkbox.draw(tscreen);
+        }
+    }
+}
+
 void PinBool::show()
 {
     PinData::show();
     std::cout << "PIN BOOL\n";
     std::cout << "----------\n";
-    std::cout << "BOOL:";
-    if(m_Bool) std::cout << "TRUE\n";
-    else std::cout << "FALSE\n";
+    std::cout << "Checkbox:" << m_Checkbox.isChecked() << std::endl;
+    std::cout << "BOOL:" << getBool() << std::endl;
 }

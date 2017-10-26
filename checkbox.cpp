@@ -53,3 +53,8 @@ bool CheckBox::processEvents(sf::RenderWindow *tscreen, sf::Event &event)
 
     return false;
 }
+
+void CheckBox::EventSelected()
+{
+    toggleChecked();
+}
