@@ -24,6 +24,7 @@ private:
     sf::Vector2f m_LocalClickedPos;
     sf::Vector2f m_GlobalClickedPos;
     sf::Vector2f m_ClickedOffset;
+    sf::Clock m_ClickedTimer;
 
     std::vector<GUIObj*> m_Targets;
 
@@ -43,6 +44,7 @@ public:
     sf::Vector2f getGlobalClickedPos();
     sf::Vector2f getOffset();
     std::vector<GUIObj*> *getTargets();
+    sf::Time getTimeSinceClicked();
 
     friend Mouse;
 };

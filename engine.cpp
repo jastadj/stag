@@ -45,7 +45,8 @@ bool Engine::init()
 bool Engine::initNodes()
 {
     // create master list of nodes
-
+    m_MasterNodeList.push_back(new NodeAddInt());
+    m_MasterNodeList.push_back(new NodeAddInt(true));
     return true;
 
 }
@@ -150,7 +151,15 @@ void Engine::mainLoop()
                         // if left mouse button was released over another pin
                         GUIObj *tobj = getObjectAtGlobal(m_Mouse.getGlobalPos());
                         Pin *dpin = dynamic_cast<Pin*>(tobj);
-                        if(dpin)
+
+                        // if clicked and released same pin
+                        if(tpin == dpin)
+                        {
+                            // if alt button is pressed while this happens, disconnect
+                            if(sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+                                dpin->disconnect();
+                        }
+                        else if(dpin)
                         {
                             // attempt to connect pins
                             //if(tpin->connect(dpin)) std::cout << "Pins connected.\n";

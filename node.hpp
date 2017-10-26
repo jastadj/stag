@@ -4,6 +4,11 @@
 #include "stagobj.hpp"
 #include "pin.hpp"
 
+struct NodeSpawn
+{
+
+};
+
 class Node: public STAGObj
 {
 protected:

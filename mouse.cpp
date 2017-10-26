@@ -70,6 +70,8 @@ void MouseButton::click()
     m_GlobalClickedPos = m_Parent->getGlobalPos();
 
     m_IsPressed = true;
+
+    m_ClickedTimer.restart();
 }
 
 void MouseButton::release()
@@ -124,12 +126,18 @@ std::vector<GUIObj*> *MouseButton::getTargets()
     return &m_Targets;
 }
 
+sf::Time MouseButton::getTimeSinceClicked()
+{
+    return m_ClickedTimer.getElapsedTime();
+}
+
 void MouseButton::show()
 {
     std::cout << "Button: ";
     if(m_Type == MOUSE_LEFT) std::cout << "Left\n";
     else if(m_Type == MOUSE_RIGHT) std::cout << "Right\n";
     std::cout << "Pressed:" << isPressed() << std::endl;
+    std::cout << "Time (ms) since last clicked : " << getTimeSinceClicked().asMilliseconds() << std::endl;
     std::cout << "local pos  = " << m_LocalClickedPos.x << "," << m_LocalClickedPos.y << std::endl;
     std::cout << "global pos = " << m_GlobalClickedPos.x << "," << m_GlobalClickedPos.y << std::endl;
     std::cout << "Targets : " << m_Targets.size() << " targets\n";

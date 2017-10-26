@@ -38,7 +38,7 @@ private:
     bool initNodes();
 
     // master node list
-
+    std::vector<Node*> m_MasterNodeList;
 
     // objects
     Mouse m_Mouse;
