@@ -218,53 +218,23 @@ void Engine::mainLoop()
                     // clear target
                     m_Mouse.left.clearTargets();
 
-                    // check nodes to see if clicked
-                    for(int n = int(m_Nodes.size())-1; n >= 0; n--)
+                    // find object at target mouse position (global)
+                    GUIObj *tobj = getObjectAtGlobal(m_Mouse.getGlobalPos());
+
+                    // if an object was found at target position
+                    if(tobj)
                     {
-                        /*
-                        if(m_Nodes[n]->containsGlobal(m_Mouse.left.getGlobalClickedPos()))
-                        {
-                            // check if clicking on something like input box inside node
-                            GUIObj *tobj = m_Nodes[n]->getObjectAtGlobal(m_Mouse.getGlobalPos());
+                        // add to left mouse target
+                        m_Mouse.left.addTarget(tobj);
 
-                            // if no object inside node was clicked
-                            if(!tobj)
-                            {
-                                m_Mouse.left.addTarget(m_Nodes[n]);
+                        // set mouse offset of position clicked with reference to object
+                        m_Mouse.left.setOffset( tobj->getPosition() - m_Mouse.left.getGlobalClickedPos());
 
-                                // get target offset
-                                m_Mouse.left.setOffset( m_Nodes[n]->getPosition() - m_Mouse.left.getGlobalClickedPos());
-                            }
-                            else
-                            {
-                                // add clicked object to target
-                                m_Mouse.left.addTarget(tobj);
-
-                                m_VertexArray[0].position = tobj->getCenterPosition();
-                            }
-
-
-                            break;
-                        }
-                        */
-
-                        // find object at target mouse position (global)
-                        GUIObj *tobj = getObjectAtGlobal(m_Mouse.getGlobalPos());
-
-                        // if an object was found at target position
-                        if(tobj)
-                        {
-                            // add to left mouse target
-                            m_Mouse.left.addTarget(tobj);
-
-                            // set mouse offset of position clicked with reference to object
-                            m_Mouse.left.setOffset( tobj->getPosition() - m_Mouse.left.getGlobalClickedPos());
-
-                            // if object is type pin, set line start
-                            Pin *tpin = dynamic_cast<Pin*>(tobj);
-                            if(tpin) m_VertexArray[0].position = tobj->getCenterPosition();
-                        }
+                        // if object is type pin, set line start
+                        Pin *tpin = dynamic_cast<Pin*>(tobj);
+                        if(tpin) m_VertexArray[0].position = tobj->getCenterPosition();
                     }
+
                 }
                 else if(event.mouseButton.button == sf::Mouse::Right)
                 {
